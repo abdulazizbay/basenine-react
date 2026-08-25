@@ -34,8 +34,11 @@ export interface ProductsPageState {
 // Orders Page
 export interface OrdersPageState {
   pausedOrders: Order[];
+  pausedTotal: number;
   processOrders: Order[];
+  processTotal: number;
   finishedOrders: Order[];
+  finishedTotal: number;
 }
 
 // Teams Page

@@ -1,87 +1,47 @@
 import React from "react";
 import { Box, Stack } from "@mui/material";
-import TabPanel from "@mui/lab/TabPanel";
-import { createSelector } from "reselect";
-import { retrieveFinishedOrders } from "./selector";
+import Pagination from "@mui/material/Pagination";
 import { useSelector } from "react-redux";
-import { Order, OrderItem } from "../../../lib/types/order";
-import { Product } from "../../../lib/types/product";
-import { serverApi } from "../../../lib/config";
+import { createSelector } from "reselect";
+import { retrieveFinishedOrders, retrieveFinishedTotal } from "./selector";
+import OrderCard from "./OrderCard";
+import { Order } from "../../../lib/types/order";
 
-// REDUX SLICE & SELECTOR
 const finishedOrdersRetriever = createSelector(
   retrieveFinishedOrders,
-  (finishedOrders) => ({ finishedOrders }),
+  retrieveFinishedTotal,
+  (finishedOrders, finishedTotal) => ({ finishedOrders, finishedTotal }),
 );
-export default function FinishedOrders() {
-  const { finishedOrders } = useSelector(finishedOrdersRetriever);
+
+interface FinishedOrdersProps {
+  page: number;
+  limit: number;
+  onPageChange: (page: number) => void;
+}
+
+export default function FinishedOrders({ page, limit, onPageChange }: FinishedOrdersProps) {
+  const { finishedOrders, finishedTotal } = useSelector(finishedOrdersRetriever);
+
+  const pageCount = Math.max(1, Math.ceil(finishedTotal / limit));
 
   return (
-    <TabPanel value={"3"}>
-      <Stack>
-        {finishedOrders?.map((order: Order) => {
-          return (
-            <Box key={order._id} className={"order-main-box"}>
-              <Box className={"order-box-scroll"}>
-                {order?.orderItems?.map((item: OrderItem) => {
-                  const product: Product = order.productData.filter(
-                    (ele: Product) => item.productId === ele._id,
-                  )[0];
-                  const imagePath = `${serverApi}/${product.productImages[0]}`;
-                  return (
-                    <Box key={item._id} className={"orders-name-price"}>
-                      <img
-                        src={imagePath}
-                        className={"order-dish-img"}
-                      />
-                      <p className={"title-dish"}>{product.productName}</p>
-                      <Box className={"price-box"}>
-                        <p>${item.itemPrice}</p>
-                        <img src={"/icons/close.svg"} />
-                        <p>{item.itemQuantity}</p>
-                        <img src={"/icons/pause.svg"} />
-                        <p style={{ marginLeft: "15px" }}>
-                          ${item.itemQuantity * item.itemPrice}
-                        </p>
-                      </Box>
-                    </Box>
-                  );
-                })}
-              </Box>
-
-              <Box className={"total-price-box"}>
-                <Box className={"box-total"}>
-                  <p>Product price</p>
-                  <p>${order.orderTotal - order.orderDelivery}</p>
-                  <img src={"/icons/plus.svg"} style={{ marginLeft: "20px" }} />
-                  <p>Delivery cost</p>
-                  <p>${order.orderDelivery}</p>
-                  <img
-                    src={"/icons/pause.svg"}
-                    style={{ marginLeft: "20px" }}
-                  />
-                  <p>Total</p>
-                  <p>${order.orderTotal}</p>
-                </Box>
-              </Box>
-            </Box>
-          );
-        })}
-
-        {!finishedOrders ||
-          (finishedOrders.length === 0 && (
-            <Box
-              display={"flex"}
-              flexDirection={"row"}
-              justifyContent={"center"}
-            >
-              <img
-                src={"/icons/noimage-list.svg"}
-                style={{ width: 300, height: 300 }}
-              />
-            </Box>
-          ))}
-      </Stack>
-    </TabPanel>
+    <Box className="orders-tab-panel">
+      {finishedOrders.length !== 0 ? (
+        <>
+          <Stack className="orders-list">
+            {finishedOrders.map((order: Order) => (
+              <OrderCard key={order._id} order={order} />
+            ))}
+          </Stack>
+          {finishedTotal > limit && (
+            <Stack className="orders-pagination" direction="row" justifyContent="center">
+              <Pagination count={pageCount} page={page} onChange={(_, value) => onPageChange(value)} />
+            </Stack>
+          )}
+        </>
+      ) : (
+        <Box className="no-data">No finished orders yet</Box>
+      )}
+    </Box>
   );
 }

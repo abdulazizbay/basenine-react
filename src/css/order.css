@@ -1,342 +1,358 @@
-.order-page {
-	width: 100%;
-	height: auto;
-	background: #f8f8ff;
-	display: flex;
+.orders-page {
+  width: 100%;
+  min-height: 70vh;
+  background: var(--bn-bg);
+  color: var(--bn-white);
+  font-family: "Inter", sans-serif;
 }
 
-.order-page .order-container {
-	margin-top: 50px;
-	margin-bottom: 50px;
-	display: flex;
-	flex-direction: row;
+.orders-page .no-data {
+  padding: 60px 0;
+  text-align: center;
+  color: var(--bn-muted);
+  font-size: 14px;
 }
 
-.order-page .order-left {
-	width: 860px;
-	height: auto;
+/* =========================================================
+   ORDERS — HERO / TABS
+   ========================================================= */
+
+.orders-hero {
+  position: relative;
+
+  padding: 80px 0 40px;
+
+  overflow: hidden;
 }
 
-.order-page .order-right {
-	width: 360px;
-	height: auto;
-	margin-top: 86px;
-	margin-left: 30px;
-	display: flex;
-	flex-direction: column;
+.orders-hero::before {
+  content: "";
+
+  position: absolute;
+  inset: 0;
+
+  opacity: 0.14;
+
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+
+  background-size: 55px 55px;
+
+  mask-image: radial-gradient(circle at 20% 0%, black, transparent 70%);
+
+  pointer-events: none;
 }
 
-.order-page .order-right .order-info-box {
-	width: 360px;
-	height: auto;
-	padding: 20px;
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	background: #f8f8ff;
-	box-shadow: 15px 14px 4px rgba(0, 0, 0, 0.25), inset -1px 0px 16px 13px rgb(24 23 112 / 20%);
-	border-radius: 16px;
-	margin-bottom: 25px;
+.orders-hero-inner {
+  position: relative;
+  z-index: 2;
+
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 28px;
 }
 
-.order-page .order-right .order-info-box .member-box {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
+.orders-hero-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  margin-bottom: 14px;
+
+  color: var(--bn-red);
+
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
 }
 
-.order-page .order-right .order-info-box .liner {
-	width: 100%;
-	border: 1px solid #a1a1a1;
-	margin-top: 40px;
-	margin-bottom: 8px;
+.orders-hero-eyebrow::before {
+  content: "";
+
+  width: 6px;
+  height: 6px;
+
+  border-radius: 50%;
+
+  background: var(--bn-red);
+  box-shadow: 0 0 10px rgba(229, 72, 77, 0.7);
 }
 
-.order-page .order-info-box .order-user-img {
-	position: relative;
-	display: flex;
-	flex-direction: column;
-	align-items: center;
+.orders-hero-title {
+  font-family: "Sora", sans-serif;
+  font-size: 38px;
+  font-weight: 800;
+  letter-spacing: -1px;
+  color: var(--bn-white);
 }
 
-.order-page .order-info-box .order-user-img .order-user-avatar {
-	width: 117px;
-	height: 112px;
-	filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
-	border-radius: 37px;
+.orders-hero-desc {
+  margin-top: 10px;
+
+  color: var(--bn-muted);
+
+  font-size: 14px;
 }
 
-.order-page .order-info-box .order-user-icon-box {
-	position: absolute;
-	padding: 5px;
-	width: 30px;
-	height: 30px;
-	top: 81%;
-	right: 0;
-	display: flex;
-	background: rgba(0, 0, 0, 0.33);
-	border-radius: 37px;
+.orders-tabs {
+  display: flex;
+  gap: 8px;
+
+  margin-top: 30px;
 }
 
-.order-page .order-user-icon-box .order-user-prof-img {
-	filter: brightness(0) invert(1);
+/* =========================================================
+   ORDERS LIST
+   ========================================================= */
+
+.orders-list-section {
+  padding: 10px 0 100px;
 }
 
-.order-page .order-info-box .order-user-name {
-	margin-top: 10px;
-	font-family: 'Commissioner';
-	font-style: normal;
-	font-weight: 500;
-	font-size: 28px;
-	line-height: 36px;
-	color: #08090d;
+.orders-list-inner {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 28px;
 }
 
-.order-page .order-info-box .order-user-prof {
-	font-family: 'Commissioner';
-	font-style: normal;
-	font-weight: 500;
-	font-size: 20px;
-	line-height: 36px;
-	color: #a1a1a1;
+.orders-list {
+  gap: 20px;
 }
 
-.order-page .order-info-box .order-user-address {
-	width: 90%;
-	display: flex;
-	flex-direction: row;
+.order-card {
+  padding: 20px 22px;
+
+  border: 1px solid var(--bn-border);
+  border-radius: 16px;
+
+  background: var(--bn-surface);
 }
 
-.order-page .order-info-box .spec-address-txt {
-	margin-left: 5px;
-	font-family: 'DM Sans';
-	font-style: normal;
-	font-weight: 400;
-	font-size: 16px;
-	line-height: 24px;
-	color: #616164;
+.order-card-header {
+  align-items: flex-start;
+
+  padding-bottom: 16px;
+
+  border-bottom: 1px solid var(--bn-border);
 }
 
-.order-page .order-info-box .card-input {
-	margin-top: 10px;
-	padding: 10px;
-	width: 100%;
-	height: 40px;
-	background: #f5f5f5;
-	border-radius: 10px;
-	font-family: 'Nunito';
-	font-style: normal;
-	font-weight: 400;
-	font-size: 16px;
-	line-height: 22px;
-	border: 0.5px solid #b3a6a6;
-	letter-spacing: -0.02em;
-	color: #434141;
+.order-card-id-date {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
-.order-page .order-info-box .card-half-input {
-	margin-top: 10px;
-	padding: 10px;
-	width: 49%;
-	height: 40px;
-	background: #f5f5f5;
-	border-radius: 10px;
-	font-family: 'Nunito';
-	font-style: normal;
-	font-weight: 400;
-	font-size: 16px;
-	line-height: 22px;
-	border: 0.5px solid #b3a6a6;
-	letter-spacing: -0.02em;
-	color: #434141;
+.order-card-id {
+  font-family: "Sora", sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--bn-white);
 }
 
-.order-page .order-info-box .cards-box {
-	margin-top: 35px;
-	width: 80%;
-	display: flex;
-	flex-direction: row;
-	justify-content: space-between;
+.order-card-date {
+  color: var(--bn-muted);
+  font-size: 12px;
 }
 
-.order-page .order-info-box .css-wca78v-MuiButtonBase-root-MuiButton-root {
-	min-width: 160px;
+.order-status {
+  padding: 5px 12px;
+
+  border-radius: 20px;
+
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
 }
 
-.order-page .order-left .order-nav-frame {
-	width: 100%;
-	height: 60px;
-	display: flex;
-	flex-direction: row;
-	justify-content: center;
-	border-bottom: 1px solid #f8f8ff;
+.order-status.status-pause {
+  border: 1px solid var(--bn-border);
+  color: var(--bn-muted);
 }
 
-.order-page .order-left .order-nav-frame .table-list {
-	display: flex;
-	justify-content: space-between;
+.order-status.status-process {
+  background: var(--bn-red);
+  color: white;
 }
 
-.order-page .css-1gsv261 {
-	width: 75%;
+.order-status.status-finish {
+  background: var(--bn-surface-2);
+  color: var(--bn-red-light);
 }
 
-.order-page .css-heg063-MuiTabs-flexContainer {
-	justify-content: space-between;
+.order-status.status-delete {
+  background: var(--bn-surface-2);
+  color: var(--bn-muted);
 }
 
-.order-page .order-main-content {
-	width: 855px;
-	height: auto;
+.order-card-items {
+  gap: 12px;
+
+  margin-top: 16px;
 }
 
-.order-page .css-19kzrtu {
-	padding-top: 24px;
+.order-item-row {
+  gap: 12px;
 }
 
-.order-page .order-main-content .order-main-box {
-	position: relative;
-	width: 100%;
-	max-height: 285px;
-	margin-bottom: 25px;
-	background: #f8f8ff;
-	box-shadow: -13px 16px 4px rgba(0, 0, 0, 0.25), inset 0px -3px 20px 11px #18177033;
-	border-radius: 16px;
+.order-item-row img {
+  width: 42px;
+  height: 42px;
+  flex-shrink: 0;
+
+  border-radius: 8px;
+  object-fit: cover;
+
+  background: var(--bn-surface-2);
 }
 
-.order-page .order-main-content .order-main-box .order-box-scroll {
-	position: relative;
-	overflow: hidden;
-	width: 100%;
-	min-height: 105px;
-	max-height: 205px;
-	margin-top: 15px;
-	display: flex;
-	flex-direction: column;
-	align-items: start;
-	overflow-y: scroll;
+.order-item-name {
+  flex: 1;
+  min-width: 0;
+
+  overflow: hidden;
+
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--bn-white);
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.order-page .order-main-content .order-main-box .order-box-scroll::-webkit-scrollbar {
-	width: 7px;
+.order-item-qty {
+  color: var(--bn-muted);
+  font-size: 12px;
 }
 
-.order-page .order-main-content .order-main-box .order-box-scroll::-webkit-scrollbar-thumb {
-	background-color: #8989db;
-	border-radius: 5px;
+.order-item-price {
+  min-width: 64px;
+
+  color: var(--bn-white);
+
+  font-size: 13px;
+  font-weight: 600;
+
+  text-align: right;
 }
 
-.order-page .order-box-scroll .orders-name-price {
-	position: relative;
-	height: 47px;
-	margin-top: 5px;
-	margin-left: 50px;
-	display: flex;
-	flex-direction: row;
-	align-items: center;
+.order-card-footer {
+  align-items: flex-end;
+
+  margin-top: 18px;
+  padding-top: 16px;
+
+  border-top: 1px solid var(--bn-border);
 }
 
-.order-page .order-box-scroll .orders-name-price .order-dish-img {
-	position: relative;
-	width: 50px;
-	height: 47px;
-	border-radius: 29px;
-	background-size: cover;
+.order-card-totals {
+  gap: 3px;
+
+  color: var(--bn-muted);
+  font-size: 12px;
 }
 
-.order-page .order-box-scroll .orders-name-price .title-dish {
-	position: relative;
-	width: 260px;
-	height: 36px;
-	margin-left: 20px;
-	font-family: 'Commissioner';
-	font-style: normal;
-	font-weight: 500;
-	font-size: 22px;
-	line-height: 36px;
-	color: #000000;
+.order-card-grand-total {
+  margin-top: 4px;
+
+  color: var(--bn-white);
+
+  font-family: "Sora", sans-serif;
+  font-size: 16px;
+  font-weight: 800;
 }
 
-.order-page .order-box-scroll .orders-name-price .price-box {
-	position: relative;
-	max-width: 170px;
-	height: 100%;
-	margin-left: 150px;
-	display: flex;
-	flex-direction: row;
-	align-items: center;
-	justify-content: space-between;
+.order-card-actions {
+  gap: 10px;
 }
 
-.order-page .order-box-scroll .orders-name-price .price-box p {
-	font-family: 'Poppins';
-	font-style: normal;
-	font-weight: 400;
-	font-size: 18px;
-	line-height: 27px;
-	color: #262626;
+.order-action-primary,
+.order-action-secondary {
+  height: 38px;
+  padding: 0 18px;
+
+  border-radius: 8px;
+
+  font-family: "Inter", sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease;
 }
 
-.order-page .order-main-content .order-main-box .total-price-box {
-	position: relative;
-	width: 100%;
-	height: 41px;
-	margin: 7px 0 7px 0;
-	display: flex;
-	flex-direction: row;
-	align-items: center;
-	justify-content: space-around;
-	box-sizing: border-box;
-	border-radius: 5px;
-	overflow: hidden;
+.order-action-primary {
+  border: none;
+
+  background: var(--bn-red);
+  color: white;
 }
 
-.order-page .order-main-content .total-price-box .cancel-button {
-	border-radius: 10px;
-	box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-	max-height: 40px;
+.order-action-primary:hover {
+  background: var(--bn-red-light);
+  transform: translateY(-1px);
 }
 
-.order-page .order-main-content .total-price-box .pay-button {
-	background: #56b74d;
-	color: #f8f8ff;
-	border-radius: 10px;
-	max-height: 40px;
-	box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+.order-action-secondary {
+  border: 1px solid var(--bn-border);
+
+  background: transparent;
+  color: var(--bn-muted);
 }
 
-.order-page .order-main-content .total-price-box .verify-button {
-	background: #0288d1;
-	color: #f8f8ff;
-	border-radius: 10px;
-	box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25), inset 0px 4px 4px rgba(0, 0, 0, 0.25);
+.order-action-secondary:hover {
+  border-color: rgba(229, 72, 77, 0.5);
+  color: var(--bn-white);
 }
 
-.order-page .order-main-content .order-main-box .total-price-box .box-total {
-	position: relative;
-	max-width: 535px;
-	height: 100%;
-	display: flex;
-	flex-direction: row;
-	align-items: center;
-	justify-content: center;
+.orders-pagination {
+  margin-top: 30px;
 }
 
-.order-page .total-price-box .box-total p {
-	margin-left: 20px;
-	font-family: 'Commissioner';
-	font-style: normal;
-	font-weight: 500;
-	font-size: 14px;
-	line-height: 36px;
-	color: #000000;
+.orders-pagination .MuiPaginationItem-root {
+  color: var(--bn-muted);
+  border: 1px solid var(--bn-border);
+  border-radius: 8px;
+  font-family: "Inter", sans-serif;
 }
 
-.order-page .total-price-box .box-total .data-compl {
-	font-family: 'Commissioner';
-	font-style: normal;
-	font-weight: 500;
-	font-size: 14px;
-	line-height: 36px;
-	color: #000000;
+.orders-pagination .MuiPaginationItem-root:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--bn-white);
+}
+
+.orders-pagination .Mui-selected {
+  background: var(--bn-red) !important;
+  border-color: var(--bn-red) !important;
+  color: white !important;
+}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 700px) {
+  .orders-hero-title {
+    font-size: 30px;
+  }
+
+  .order-card-header {
+    flex-direction: column !important;
+    gap: 10px;
+  }
+
+  .order-card-footer {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 14px;
+  }
+
+  .order-item-row {
+    flex-wrap: wrap;
+  }
 }
