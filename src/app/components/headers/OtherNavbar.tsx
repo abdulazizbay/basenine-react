@@ -1,3 +1,4 @@
+import { useRef } from "react";
 import {
   Box,
   Button,
@@ -8,7 +9,7 @@ import {
   Stack,
 } from "@mui/material";
 import { NavLink } from "react-router-dom";
-import { Logout } from "@mui/icons-material";
+import { Logout, Person } from "@mui/icons-material";
 
 import Basket from "./Basket";
 import { CartItem } from "../../../lib/types/search";

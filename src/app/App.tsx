@@ -16,7 +16,7 @@ import { CartItem } from "../lib/types/search";
 import useBasket from "./hooks/useBasket";
 import AuthenticationModal from "./components/auth";
 import { T } from "../lib/types/common";
-import { sweetErrorHandling, sweetTopSuccessAlert } from "../lib/sweetAlert";
+import { useSnackbar } from "notistack";
 import { Messages } from "../lib/config";
 import MemberService from "./services/MemberService";
 import { useGlobals } from "./hooks/useGlobals";
@@ -29,6 +29,7 @@ function App() {
   const location = useLocation();
 
   const { setAuthMember } = useGlobals();
+  const { enqueueSnackbar } = useSnackbar();
   const { onAdd, cartItems, onRemove, onDelete, onDeleteAll } = useBasket();
   const [signupOpen, setSignupOpen] = useState<boolean>(false);
   const [loginOpen, setLoginOpen] = useState<boolean>(false);
@@ -46,11 +47,11 @@ function App() {
     try {
       const member = new MemberService();
       await member.logout();
-      await sweetTopSuccessAlert("success", 700);
+      enqueueSnackbar("Logged out successfully", { variant: "success" });
       setAuthMember(null);
     } catch (err) {
       console.log(err);
-      sweetErrorHandling(Messages.error1);
+      enqueueSnackbar(Messages.error1, { variant: "error" });
     }
   };
   return (

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import axios from "axios";
 
 import {
   Box,
@@ -98,12 +99,9 @@ export default function AuthenticationModal(props: AuthenticationModalProps) {
 
       handleSignupClose();
 
-      enqueueSnackbar(
-        err instanceof Error ? err.message : "Something went wrong",
-        {
-          variant: "error",
-        },
-      );
+      enqueueSnackbar(err instanceof Error ? err.message : Messages.error1, {
+        variant: "error",
+      });
     }
   };
 
@@ -136,12 +134,17 @@ export default function AuthenticationModal(props: AuthenticationModalProps) {
 
       handleLoginClose();
 
-      enqueueSnackbar(
-        err instanceof Error ? err.message : "Something went wrong",
-        {
-          variant: "error",
-        },
-      );
+      if (
+        axios.isAxiosError(err) &&
+        (err.response?.status === 401 || err.response?.status === 404)
+      ) {
+        enqueueSnackbar(Messages.error6, { variant: "error" });
+        return;
+      }
+
+      enqueueSnackbar(err instanceof Error ? err.message : Messages.error1, {
+        variant: "error",
+      });
     }
   };
 
