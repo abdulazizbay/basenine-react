@@ -1,4 +1,7 @@
 import { Route, Switch, useRouteMatch } from "react-router-dom";
+import Games from "./Games";
+import GameDetail from "./GameDetail";
+import "../../../css/games.css";
 
 export default function GamesPage() {
   const match = useRouteMatch();
@@ -7,10 +10,10 @@ export default function GamesPage() {
     <div className="games-page">
       <Switch>
         <Route path={`${match.path}/:gameId`}>
-          <div>Game detail — coming soon</div>
+          <GameDetail />
         </Route>
         <Route path={`${match.path}`}>
-          <div>Games list — coming soon</div>
+          <Games />
         </Route>
       </Switch>
     </div>
