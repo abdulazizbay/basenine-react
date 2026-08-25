@@ -34,7 +34,7 @@ const SORT_OPTIONS: { label: string; value: TeamOrder }[] = [
   { label: "Most Viewed", value: TeamOrder.VIEWS },
 ];
 
-const LIMIT = 9;
+const LIMIT = 8;
 
 export default function Teams() {
   const { setTeams, setTeamTotal } = actionDispatch(useDispatch());

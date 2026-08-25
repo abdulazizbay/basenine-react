@@ -45,7 +45,7 @@ function teamOf(value: string | Team): Team | null {
   return typeof value === "object" ? value : null;
 }
 
-const LIMIT = 9;
+const LIMIT = 8;
 
 export default function Games() {
   const { setGames, setGameTotal } = actionDispatch(useDispatch());

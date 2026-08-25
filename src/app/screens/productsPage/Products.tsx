@@ -59,7 +59,7 @@ interface ProductsProps {
   onAdd: (item: CartItem) => void;
 }
 
-const LIMIT = 12;
+const LIMIT = 8;
 
 export default function Products({ onAdd }: ProductsProps) {
   const { setProducts, setProductTotal, setTeamOptions } = actionDispatch(useDispatch());
