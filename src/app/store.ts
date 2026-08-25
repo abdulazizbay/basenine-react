@@ -1,7 +1,16 @@
 import { configureStore, ThunkAction, Action } from "@reduxjs/toolkit";
+import homePageReducer from "./screens/homePage/slice";
+import reduxLogger from "redux-logger"
+import ProductsPageReducer from "./screens/productsPage/slice";
+import ordersPageReducer from "./screens/ordersPage/slice";
 
 export const store = configureStore({
-  reducer: {},
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(reduxLogger),
+  reducer: {
+    homePage: homePageReducer,
+    productsPage: ProductsPageReducer,
+    ordersPage: ordersPageReducer
+  },
 });
 
 export type AppDispatch = typeof store.dispatch;
