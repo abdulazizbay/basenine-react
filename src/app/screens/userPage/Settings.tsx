@@ -1,160 +1,106 @@
-import { Box } from "@mui/material";
-import CloudDownloadIcon from "@mui/icons-material/CloudDownload";
-import Button from "@mui/material/Button";
+import React, { useState } from "react";
+import { Box, Button } from "@mui/material";
+import { useSnackbar } from "notistack";
 import { useGlobals } from "../../hooks/useGlobals";
-import { useState } from "react";
-import { MemberUpdateInput } from "../../../lib/types/member";
+import { Member, MemberUpdateInput } from "../../../lib/types/member";
+import { Address } from "../../../lib/enums/common.enum";
 import { T } from "../../../lib/types/common";
-import {
-  sweetErrorHandling,
-  sweetTopSmallSuccessAlert,
-} from "../../../lib/sweetAlert";
 import { Messages, serverApi } from "../../../lib/config";
 import MemberService from "../../services/MemberService";
 
-export function Settings() {
-  const { authMember, setAuthMember } = useGlobals();
-  const [memberImage, setMemberImage] = useState<string>(
-    authMember?.memberImage
-      ? `${serverApi}/${authMember.memberImage}`
-      : "/icons/default-user.svg",
-  );
-  const [memberUpdateInput, setMemberUpdateInput] = useState<MemberUpdateInput>(
-    {
-      memberNick: authMember?.memberNick,
-      memberPhone: authMember?.memberPhone,
-      memberDesc: authMember?.memberDesc,
-      memberAdress: authMember?.memberAdress,
-      memberImage: authMember?.memberImage,
-    },
-  );
+interface SettingsProps {
+  memberDetail: Member;
+  onUpdated: (updated: Member) => void;
+}
 
-  // Handlers
-  const memberNickHandler = (e: T) => {
-    memberUpdateInput.memberNick = e.target.value;
-    setMemberUpdateInput({ ...memberUpdateInput });
-  };
-  const memberPhoneHandler = (e: T) => {
-    memberUpdateInput.memberPhone = e.target.value;
-    setMemberUpdateInput({ ...memberUpdateInput });
-  };
-  const memberDescHandler = (e: T) => {
-    memberUpdateInput.memberDesc = e.target.value;
-    setMemberUpdateInput({ ...memberUpdateInput });
-  };
-  const memberAdressHandler = (e: T) => {
-    memberUpdateInput.memberAdress = e.target.value;
-    setMemberUpdateInput({ ...memberUpdateInput });
+export default function Settings({ memberDetail, onUpdated }: SettingsProps) {
+  const { setAuthMember } = useGlobals();
+  const { enqueueSnackbar } = useSnackbar();
+
+  const [memberImagePreview, setMemberImagePreview] = useState<string>(
+    memberDetail.memberImage ? `${serverApi}/${memberDetail.memberImage}` : "/icons/default-user.svg",
+  );
+  const [memberUpdateInput, setMemberUpdateInput] = useState<MemberUpdateInput>({
+    memberNick: memberDetail.memberNick,
+    memberPhone: memberDetail.memberPhone,
+    memberDesc: memberDetail.memberDesc ?? "",
+    memberAddress: memberDetail.memberAddress,
+  });
+
+  const handleChange = (field: keyof MemberUpdateInput) => (e: T) => {
+    setMemberUpdateInput((prev) => ({ ...prev, [field]: e.target.value }));
   };
 
-  const handleSubmitButton = async () => {
+  const handleImageChange = (e: T) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const validTypes = ["image/jpg", "image/png", "image/jpeg"];
+    if (!validTypes.includes(file.type)) {
+      enqueueSnackbar(Messages.error5, { variant: "error" });
+      return;
+    }
+    setMemberUpdateInput((prev) => ({ ...prev, memberImage: file }));
+    setMemberImagePreview(URL.createObjectURL(file));
+  };
+
+  const handleSubmit = async () => {
     try {
-      if (!authMember) throw new Error(Messages.error2);
-      if (
-        memberUpdateInput.memberAdress === "" ||
-        memberUpdateInput.memberDesc === "" ||
-        memberUpdateInput.memberNick === "" ||
-        memberUpdateInput.memberPhone === ""
-      ) {
+      if (!memberUpdateInput.memberNick || !memberUpdateInput.memberPhone) {
         throw new Error(Messages.error3);
       }
       const member = new MemberService();
       const result = await member.updateMember(memberUpdateInput);
       setAuthMember(result);
-      await sweetTopSmallSuccessAlert("Modified successfully!", 700);
+      onUpdated(result);
+      enqueueSnackbar("Profile updated", { variant: "success" });
     } catch (err) {
-      console.log(err);
-      sweetErrorHandling(err);
+      enqueueSnackbar(err instanceof Error ? err.message : Messages.error1, { variant: "error" });
     }
   };
 
-  const handleImageViewver = (e: T) => {
-    const file = e.target.files[0];
-    const fileType = file.type;
-    const validateImageTypes = ["image/jpg", "image/png", "image/jpeg"];
-    if (!validateImageTypes.includes(fileType)) {
-      sweetErrorHandling(Messages.error5).then();
-    } else {
-      if (file) {
-        memberUpdateInput.memberImage = file;
-        setMemberUpdateInput({ ...memberUpdateInput });
-        setMemberImage(URL.createObjectURL(file));
-      }
-    }
-  };
   return (
-    <Box className={"settings"}>
-      <Box className={"member-media-frame"}>
-        <img src={memberImage} className={"mb-image"} />
-        <div className={"media-change-box"}>
-          <span>Upload image</span>
-          <p>JPG, JPEG, PNG formats only!</p>
-          <div className={"up-del-box"}>
-            <Button component="label">
-              <CloudDownloadIcon />
-              <input type="file" hidden onChange={handleImageViewver} />
-            </Button>
-          </div>
-        </div>
+    <Box className="settings-form">
+      <Box className="settings-image-row">
+        <img src={memberImagePreview} className="settings-avatar" alt="avatar" />
+        <Box>
+          <Button component="label" className="settings-upload-button">
+            Change Photo
+            <input type="file" hidden onChange={handleImageChange} />
+          </Button>
+          <p className="settings-hint">JPG, JPEG, or PNG only</p>
+        </Box>
       </Box>
-      <Box className={"input-frame"}>
-        <div className={"long-input"}>
-          <label className={"spec-label"}>Username</label>
-          <input
-            className={"spec-input mb-nick"}
-            type="text"
-            placeholder={authMember?.memberNick}
-            value={memberUpdateInput.memberNick}
-            name="memberNick"
-            onChange={memberNickHandler}
-          />
-        </div>
+
+      <Box className="settings-field">
+        <label>Username</label>
+        <input type="text" value={memberUpdateInput.memberNick} onChange={handleChange("memberNick")} />
       </Box>
-      <Box className={"input-frame"}>
-        <div className={"short-input"}>
-          <label className={"spec-label"}>Phone</label>
-          <input
-            className={"spec-input mb-phone"}
-            type="text"
-            placeholder={authMember?.memberPhone ?? "No phone"}
-            value={memberUpdateInput.memberPhone}
-            name="memberPhone"
-            onChange={memberPhoneHandler}
-          />
-        </div>
-        <div className={"short-input"}>
-          <label className={"spec-label"}>Address</label>
-          <input
-            className={"spec-input  mb-address"}
-            type="text"
-            placeholder={
-              authMember?.memberAdress ? authMember.memberAdress : "No adress"
-            }
-            value={memberUpdateInput.memberAdress}
-            name="memberAddress"
-            onChange={memberAdressHandler}
-          />
-        </div>
+
+      <Box className="settings-field">
+        <label>Phone</label>
+        <input type="text" value={memberUpdateInput.memberPhone} onChange={handleChange("memberPhone")} />
       </Box>
-      <Box className={"input-frame"}>
-        <div className={"long-input"}>
-          <label className={"spec-label"}>Description</label>
-          <textarea
-            className={"spec-textarea mb-description"}
-            placeholder={
-              authMember?.memberDesc ? authMember.memberDesc : "No description"
-            }
-            value={memberUpdateInput.memberDesc}
-            name="memberDesc"
-            onChange={memberDescHandler}
-          />
-        </div>
+
+      <Box className="settings-field">
+        <label>Address</label>
+        <select value={memberUpdateInput.memberAddress ?? ""} onChange={handleChange("memberAddress")}>
+          <option value="">Select a city</option>
+          {Object.values(Address).map((addr) => (
+            <option key={addr} value={addr}>
+              {addr}
+            </option>
+          ))}
+        </select>
       </Box>
-      <Box className={"save-box"}>
-        <Button variant={"contained"} onClick={handleSubmitButton}>
-          Save
-        </Button>
+
+      <Box className="settings-field">
+        <label>About</label>
+        <textarea value={memberUpdateInput.memberDesc} onChange={handleChange("memberDesc")} />
       </Box>
+
+      <Button className="settings-save" onClick={handleSubmit}>
+        Save Changes
+      </Button>
     </Box>
   );
 }
