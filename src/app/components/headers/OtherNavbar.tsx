@@ -80,7 +80,9 @@ export default function OtherNavbar(props: OtherNavbarProps) {
             <NavLink to="/games" activeClassName="underline">
               Games
             </NavLink>
-
+            <NavLink to="/players" activeClassName="underline">
+              Players
+            </NavLink>
             <NavLink to="/products" activeClassName="underline">
               Shop
             </NavLink>

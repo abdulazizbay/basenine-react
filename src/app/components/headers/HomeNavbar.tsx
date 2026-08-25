@@ -62,11 +62,7 @@ export default function HomeNavbar(props: HomeNavbarProps) {
               </div>
             </NavLink>
 
-            <Stack
-              className="nav-links"
-              direction="row"
-              alignItems="center"
-            >
+            <Stack className="nav-links" direction="row" alignItems="center">
               <NavLink exact to="/" activeClassName="active">
                 Home
               </NavLink>
@@ -78,7 +74,9 @@ export default function HomeNavbar(props: HomeNavbarProps) {
               <NavLink to="/games" activeClassName="active">
                 Games
               </NavLink>
-
+              <NavLink to="/players" activeClassName="active">
+                players
+              </NavLink>
               <NavLink to="/products" activeClassName="active">
                 Shop
               </NavLink>
@@ -144,10 +142,7 @@ export default function HomeNavbar(props: HomeNavbarProps) {
             >
               <MenuItem onClick={handleLogoutRequest}>
                 <ListItemIcon>
-                  <Logout
-                    fontSize="small"
-                    style={{ color: "#e5484d" }}
-                  />
+                  <Logout fontSize="small" style={{ color: "#e5484d" }} />
                 </ListItemIcon>
                 Logout
               </MenuItem>
@@ -174,8 +169,8 @@ export default function HomeNavbar(props: HomeNavbarProps) {
             </h1>
 
             <p>
-              Follow teams, discover players, track games,
-              and gear up for the season — all in one place.
+              Follow teams, discover players, track games, and gear up for the
+              season — all in one place.
             </p>
 
             <div className="hero-actions">
