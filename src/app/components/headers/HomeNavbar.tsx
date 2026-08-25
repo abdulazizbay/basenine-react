@@ -47,10 +47,11 @@ export default function HomeNavbar(props: HomeNavbarProps) {
 
   return (
     <header className="home-header">
-      {/* NAVBAR */}
+      {/* ==================== NAVBAR ==================== */}
       <div className="home-navbar">
         <Container maxWidth={false} className="navbar-container">
           <Stack className="navbar-inner">
+            {/* BRAND */}
             <NavLink to="/" className="brand-link">
               <div className="brand-icon">
                 <span>9</span>
@@ -62,6 +63,7 @@ export default function HomeNavbar(props: HomeNavbarProps) {
               </div>
             </NavLink>
 
+            {/* NAVIGATION */}
             <Stack className="nav-links" direction="row" alignItems="center">
               <NavLink exact to="/" activeClassName="active">
                 Home
@@ -74,9 +76,11 @@ export default function HomeNavbar(props: HomeNavbarProps) {
               <NavLink to="/games" activeClassName="active">
                 Games
               </NavLink>
+
               <NavLink to="/players" activeClassName="active">
                 Players
               </NavLink>
+
               <NavLink to="/products" activeClassName="active">
                 Shop
               </NavLink>
@@ -93,6 +97,7 @@ export default function HomeNavbar(props: HomeNavbarProps) {
                 </>
               )}
 
+              {/* CART */}
               <Basket
                 cartItems={cartItems}
                 onRemove={onRemove}
@@ -101,6 +106,7 @@ export default function HomeNavbar(props: HomeNavbarProps) {
                 onAdd={onAdd}
               />
 
+              {/* AUTH */}
               {!authMember ? (
                 <Button
                   className="nav-login"
@@ -122,6 +128,7 @@ export default function HomeNavbar(props: HomeNavbarProps) {
               )}
             </Stack>
 
+            {/* LOGOUT MENU */}
             <Menu
               anchorEl={anchorEl}
               open={Boolean(anchorEl)}
@@ -135,10 +142,53 @@ export default function HomeNavbar(props: HomeNavbarProps) {
                 horizontal: "right",
                 vertical: "bottom",
               }}
+              PaperProps={{
+                elevation: 0,
+                sx: {
+                  mt: 1.5,
+                  minWidth: 150,
+                  borderRadius: "10px",
+                  overflow: "visible",
+                  filter: "drop-shadow(0px 8px 24px rgba(0,0,0,0.35))",
+                  backgroundColor: "#151923",
+                  color: "#f7f8fa",
+                  border: "1px solid rgba(255,255,255,0.08)",
+
+                  "& .MuiMenuItem-root": {
+                    fontFamily: "Inter, sans-serif",
+                    fontSize: "14px",
+                    borderRadius: "7px",
+                    margin: "4px",
+                  },
+
+                  "& .MuiMenuItem-root:hover": {
+                    backgroundColor: "rgba(255,255,255,0.06)",
+                  },
+
+                  "&:before": {
+                    content: '""',
+                    display: "block",
+                    position: "absolute",
+                    top: 0,
+                    right: 18,
+                    width: 10,
+                    height: 10,
+                    backgroundColor: "#151923",
+                    transform: "translateY(-50%) rotate(45deg)",
+                    borderLeft: "1px solid rgba(255,255,255,0.08)",
+                    borderTop: "1px solid rgba(255,255,255,0.08)",
+                  },
+                },
+              }}
             >
               <MenuItem onClick={handleLogoutRequest}>
                 <ListItemIcon>
-                  <Logout fontSize="small" style={{ color: "#e5484d" }} />
+                  <Logout
+                    fontSize="small"
+                    sx={{
+                      color: "#e5484d",
+                    }}
+                  />
                 </ListItemIcon>
                 Logout
               </MenuItem>
@@ -147,7 +197,7 @@ export default function HomeNavbar(props: HomeNavbarProps) {
         </Container>
       </div>
 
-      {/* HERO */}
+      {/* ==================== HERO ==================== */}
       <section className="hero-section">
         <Container maxWidth={false} className="hero-container">
           <Stack className="hero-content">

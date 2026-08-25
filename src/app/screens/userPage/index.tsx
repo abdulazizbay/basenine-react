@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { Box, Stack } from "@mui/material";
 import { useHistory } from "react-router-dom";
+import PhoneIcon from "@mui/icons-material/Phone";
+import LocationOnIcon from "@mui/icons-material/LocationOn";
+import PersonIcon from "@mui/icons-material/Person";
+import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 import Settings from "./Settings";
 import "../../../css/userPage.css";
 import { useGlobals } from "../../hooks/useGlobals";
@@ -41,17 +45,38 @@ export default function UserPage() {
       <section className="profile-hero">
         <Box className="profile-hero-glow" />
         <Box className="profile-hero-inner">
-          <img className="profile-avatar" src={imagePath} alt={memberDetail.memberNick} />
+          <Box className="profile-hero-media">
+            <img src={imagePath} alt={memberDetail.memberNick} />
+          </Box>
+
           <Box className="profile-hero-info">
-            <span className="profile-type-badge">{memberDetail.memberType}</span>
+            <Box className="profile-hero-eyebrow">
+              <PersonIcon />
+              {memberDetail.memberType}
+            </Box>
             <Box className="profile-name">{memberDetail.memberNick}</Box>
-            <span className="profile-since">
-              Member since{" "}
-              {new Date(memberDetail.createdAt).toLocaleDateString(undefined, {
-                month: "long",
-                year: "numeric",
-              })}
-            </span>
+
+            <Stack className="profile-hero-stats" direction="row">
+              <Box className="profile-stat">
+                <strong>
+                  {new Date(memberDetail.createdAt).toLocaleDateString(undefined, {
+                    month: "short",
+                    year: "numeric",
+                  })}
+                </strong>
+                <span>Member Since</span>
+              </Box>
+              <Box className="stat-divider" />
+              <Box className="profile-stat">
+                <strong>{subscribedTeams.length}</strong>
+                <span>Teams Followed</span>
+              </Box>
+              <Box className="stat-divider" />
+              <Box className="profile-stat">
+                <strong>{memberDetail.memberStatus}</strong>
+                <span>Status</span>
+              </Box>
+            </Stack>
           </Box>
         </Box>
       </section>
@@ -61,7 +86,7 @@ export default function UserPage() {
           <Stack className="profile-grid" direction="row">
             <Box className="profile-main">
               <Box className="section-eyebrow">ACCOUNT</Box>
-              <Box className="section-title">Edit Profile</Box>
+              <Box className="section-title">Profile Settings</Box>
               <Settings
                 memberDetail={memberDetail}
                 onUpdated={(updated) =>
@@ -76,19 +101,27 @@ export default function UserPage() {
                 <Box className="section-title">Account Info</Box>
                 <Stack className="profile-info-list">
                   <Stack className="profile-info-row" direction="row" justifyContent="space-between">
-                    <span>Username</span>
+                    <span>
+                      <PersonIcon /> Username
+                    </span>
                     <span>{memberDetail.memberNick}</span>
                   </Stack>
                   <Stack className="profile-info-row" direction="row" justifyContent="space-between">
-                    <span>Phone</span>
+                    <span>
+                      <PhoneIcon /> Phone
+                    </span>
                     <span>{memberDetail.memberPhone}</span>
                   </Stack>
                   <Stack className="profile-info-row" direction="row" justifyContent="space-between">
-                    <span>Address</span>
+                    <span>
+                      <LocationOnIcon /> Address
+                    </span>
                     <span>{memberDetail.memberAddress ?? "Not set"}</span>
                   </Stack>
                   <Stack className="profile-info-row" direction="row" justifyContent="space-between">
-                    <span>Status</span>
+                    <span>
+                      <FiberManualRecordIcon /> Status
+                    </span>
                     <span>{memberDetail.memberStatus}</span>
                   </Stack>
                 </Stack>

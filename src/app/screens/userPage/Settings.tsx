@@ -71,14 +71,16 @@ export default function Settings({ memberDetail, onUpdated }: SettingsProps) {
         </Box>
       </Box>
 
-      <Box className="settings-field">
-        <label>Username</label>
-        <input type="text" value={memberUpdateInput.memberNick} onChange={handleChange("memberNick")} />
-      </Box>
+      <Box className="settings-row">
+        <Box className="settings-field">
+          <label>Username</label>
+          <input type="text" value={memberUpdateInput.memberNick} onChange={handleChange("memberNick")} />
+        </Box>
 
-      <Box className="settings-field">
-        <label>Phone</label>
-        <input type="text" value={memberUpdateInput.memberPhone} onChange={handleChange("memberPhone")} />
+        <Box className="settings-field">
+          <label>Phone</label>
+          <input type="text" value={memberUpdateInput.memberPhone} onChange={handleChange("memberPhone")} />
+        </Box>
       </Box>
 
       <Box className="settings-field">
