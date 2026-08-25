@@ -1,4 +1,7 @@
 import { Route, Switch, useRouteMatch } from "react-router-dom";
+import Players from "./Players";
+import PlayerDetail from "./PlayerDetail";
+import "../../../css/players.css";
 
 export default function PlayersPage() {
   const match = useRouteMatch();
@@ -7,10 +10,10 @@ export default function PlayersPage() {
     <div className="players-page">
       <Switch>
         <Route path={`${match.path}/:playerId`}>
-          <div>Player detail — coming soon</div>
+          <PlayerDetail />
         </Route>
         <Route path={`${match.path}`}>
-          <div>Players list — coming soon</div>
+          <Players />
         </Route>
       </Switch>
     </div>
