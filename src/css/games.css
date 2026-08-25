@@ -13,6 +13,40 @@
   font-size: 14px;
 }
 
+.games-page .section-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  margin-bottom: 10px;
+
+  color: var(--bn-red);
+
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+}
+
+.games-page .section-eyebrow::before {
+  content: "";
+
+  width: 6px;
+  height: 6px;
+
+  border-radius: 50%;
+
+  background: var(--bn-red);
+  box-shadow: 0 0 10px rgba(229, 72, 77, 0.7);
+}
+
+.games-page .section-title {
+  font-family: "Sora", sans-serif;
+  font-size: 30px;
+  font-weight: 800;
+  letter-spacing: -0.7px;
+  color: var(--bn-white);
+}
+
 /* =========================================================
    GAMES LIST — HERO / TOOLBAR
    ========================================================= */
@@ -557,6 +591,139 @@
 }
 
 /* =========================================================
+   GAME DETAIL — GAME DAY
+   ========================================================= */
+
+.gameday-section,
+.basics-section {
+  max-width: 1380px;
+  margin: 0 auto;
+  padding: 70px 28px 0;
+}
+
+.gameday-steps {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+
+  margin-top: 28px;
+}
+
+.gameday-step {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  padding: 24px 20px;
+
+  border: 1px solid var(--bn-border);
+  border-radius: 16px;
+
+  background: var(--bn-surface);
+
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.gameday-step:hover {
+  transform: translateY(-4px);
+  border-color: rgba(229, 72, 77, 0.4);
+}
+
+.gameday-step-number {
+  color: var(--bn-red);
+
+  font-family: "Sora", sans-serif;
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+}
+
+.gameday-step-title {
+  color: var(--bn-white);
+
+  font-family: "Sora", sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.gameday-step-desc {
+  margin: 0;
+
+  color: var(--bn-muted);
+
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+/* =========================================================
+   GAME DETAIL — HOW BASEBALL WORKS
+   ========================================================= */
+
+.basics-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+
+  margin-top: 28px;
+}
+
+.basics-card {
+  padding: 28px 22px;
+
+  border: 1px solid var(--bn-border);
+  border-radius: 16px;
+
+  background: var(--bn-surface);
+
+  text-align: center;
+
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.basics-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(229, 72, 77, 0.4);
+}
+
+.basics-value {
+  display: block;
+
+  color: var(--bn-red);
+
+  font-family: "Sora", sans-serif;
+  font-size: 40px;
+  font-weight: 800;
+  letter-spacing: -1px;
+}
+
+.basics-label {
+  display: block;
+
+  margin-top: 4px;
+
+  color: var(--bn-white);
+
+  font-family: "Sora", sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.basics-desc {
+  margin: 10px 0 0;
+
+  color: var(--bn-muted);
+
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+/* =========================================================
    RESPONSIVE
    ========================================================= */
 
@@ -598,9 +765,21 @@
     width: 48px;
     height: 48px;
   }
+
+  .gameday-steps {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .basics-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (max-width: 480px) {
+  .gameday-steps {
+    grid-template-columns: 1fr;
+  }
+
   .game-hero-matchup {
     flex-direction: column !important;
   }

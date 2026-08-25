@@ -14,6 +14,8 @@ import { Team } from "../../../lib/types/team";
 import { GameStatus } from "../../../lib/enums/game.enum";
 import GameService from "../../services/GameService";
 import { serverApi } from "../../../lib/config";
+import GameDay from "./GameDay";
+import BaseballGuide from "./BaseballGuide";
 
 const gameDetailRetriever = createSelector(retrieveChosenGame, (chosenGame) => ({
   chosenGame,
@@ -121,6 +123,9 @@ export default function GameDetail() {
           </Stack>
         </Box>
       </section>
+
+      <GameDay />
+      <BaseballGuide />
     </div>
   );
 }

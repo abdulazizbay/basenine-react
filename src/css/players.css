@@ -13,6 +13,40 @@
   font-size: 14px;
 }
 
+.players-page .section-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  margin-bottom: 10px;
+
+  color: var(--bn-red);
+
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+}
+
+.players-page .section-eyebrow::before {
+  content: "";
+
+  width: 6px;
+  height: 6px;
+
+  border-radius: 50%;
+
+  background: var(--bn-red);
+  box-shadow: 0 0 10px rgba(229, 72, 77, 0.7);
+}
+
+.players-page .section-title {
+  font-family: "Sora", sans-serif;
+  font-size: 30px;
+  font-weight: 800;
+  letter-spacing: -0.7px;
+  color: var(--bn-white);
+}
+
 /* =========================================================
    PLAYERS LIST — HERO / TOOLBAR
    ========================================================= */
@@ -544,6 +578,209 @@
 }
 
 /* =========================================================
+   PLAYER DETAIL — POSITION GUIDE
+   ========================================================= */
+
+.position-section {
+  max-width: 1380px;
+  margin: 0 auto;
+  padding: 70px 28px 0;
+}
+
+.position-layout {
+  gap: 40px;
+  margin-top: 28px;
+  align-items: flex-start;
+}
+
+.position-diagram-wrap {
+  flex-shrink: 0;
+
+  width: 360px;
+
+  padding: 20px;
+
+  border: 1px solid var(--bn-border);
+  border-radius: 18px;
+
+  background: var(--bn-surface);
+}
+
+.position-diagram {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.field-outfield {
+  fill: var(--bn-surface-2);
+  stroke: var(--bn-border);
+  stroke-width: 1;
+}
+
+.field-infield {
+  fill: var(--bn-bg);
+  stroke: rgba(229, 72, 77, 0.3);
+  stroke-width: 1.5;
+}
+
+.field-foul-line {
+  stroke: rgba(229, 72, 77, 0.3);
+  stroke-width: 1.5;
+  stroke-dasharray: 5 5;
+}
+
+.field-base {
+  fill: var(--bn-white);
+}
+
+.field-home {
+  fill: var(--bn-red);
+}
+
+.field-mound {
+  fill: var(--bn-surface-2);
+  stroke: var(--bn-border);
+  stroke-width: 1.5;
+}
+
+.position-marker-dot {
+  fill: var(--bn-surface-2);
+  stroke: var(--bn-border);
+  stroke-width: 2;
+
+  transition:
+    fill 0.2s ease,
+    stroke 0.2s ease;
+}
+
+.position-marker-label {
+  fill: var(--bn-white);
+
+  font-family: "Sora", sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+
+  pointer-events: none;
+}
+
+.position-marker.active .position-marker-dot {
+  fill: var(--bn-red);
+  stroke: var(--bn-red-light);
+}
+
+.position-marker.active .position-marker-label {
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.position-marker-ring {
+  fill: none;
+  stroke: var(--bn-red);
+  stroke-width: 2;
+
+  transform-origin: center;
+  transform-box: fill-box;
+
+  animation: positionRingPulse 1.8s ease-out infinite;
+}
+
+@keyframes positionRingPulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+  100% {
+    transform: scale(1.6);
+    opacity: 0;
+  }
+}
+
+.position-guide-list {
+  flex: 1;
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.position-guide-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+
+  padding: 16px 18px;
+
+  border: 1px solid var(--bn-border);
+  border-radius: 12px;
+
+  background: var(--bn-surface);
+
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease;
+}
+
+.position-guide-card.active {
+  border-color: rgba(229, 72, 77, 0.5);
+  background: rgba(229, 72, 77, 0.08);
+}
+
+.position-guide-abbr {
+  flex-shrink: 0;
+
+  width: 38px;
+  height: 38px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: var(--bn-surface-2);
+  color: var(--bn-muted);
+
+  font-family: "Sora", sans-serif;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.position-guide-card.active .position-guide-abbr {
+  background: var(--bn-red);
+  color: white;
+}
+
+.position-guide-body {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.position-guide-title {
+  font-family: "Sora", sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--bn-white);
+}
+
+.position-guide-title em {
+  color: var(--bn-muted);
+  font-style: normal;
+  font-weight: 500;
+}
+
+.position-guide-desc {
+  margin: 0;
+
+  color: var(--bn-muted);
+
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+/* =========================================================
    RESPONSIVE
    ========================================================= */
 
@@ -589,6 +826,16 @@
   .player-team-card {
     margin-left: auto;
     margin-right: auto;
+  }
+
+  .position-layout {
+    flex-direction: column !important;
+  }
+
+  .position-diagram-wrap {
+    width: 100%;
+    max-width: 320px;
+    margin: 0 auto;
   }
 
   .players-grid {

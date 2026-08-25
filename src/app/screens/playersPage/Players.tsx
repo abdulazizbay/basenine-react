@@ -16,6 +16,7 @@ import { PlayerOrder } from "../../../lib/enums/player.enum";
 import { Direction } from "../../../lib/types/common";
 import PlayerService from "../../services/PlayerService";
 import { serverApi } from "../../../lib/config";
+import { POSITION_INFO } from "../../../lib/data/playerPositions";
 
 const playersRetriever = createSelector(
   retrievePlayers,
@@ -32,18 +33,6 @@ const SORT_OPTIONS: { label: string; value: PlayerOrder }[] = [
   { label: "Newest", value: PlayerOrder.CREATED_AT },
   { label: "Most Viewed", value: PlayerOrder.VIEWS },
 ];
-
-const POSITION_LABEL: Record<string, string> = {
-  PITCHER: "Pitcher",
-  CATCHER: "Catcher",
-  BASEMAN1: "1st Base",
-  BASEMAN2: "2nd Base",
-  BASEMAN3: "3rd Base",
-  SHORTSTOP: "Shortstop",
-  LEFTFIELDER: "Left Field",
-  CENTERFIELDER: "Center Field",
-  RIGHTFIELDER: "Right Field",
-};
 
 function teamOf(value?: string | Team | null): Team | null {
   return value && typeof value === "object" ? value : null;
@@ -160,7 +149,7 @@ export default function Players() {
                     <Box className="player-tile-media">
                       <img src={imagePath} alt={player.playerNick} />
                       <span className="player-tile-position">
-                        {POSITION_LABEL[player.playerPosition] ?? player.playerPosition}
+                        {POSITION_INFO[player.playerPosition]?.abbr ?? player.playerPosition}
                       </span>
                     </Box>
                     <Box className="player-tile-body">

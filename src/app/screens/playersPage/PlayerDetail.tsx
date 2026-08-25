@@ -11,6 +11,8 @@ import { Player } from "../../../lib/types/player";
 import { Team } from "../../../lib/types/team";
 import PlayerService from "../../services/PlayerService";
 import { serverApi } from "../../../lib/config";
+import { POSITION_INFO, POSITION_ORDER } from "../../../lib/data/playerPositions";
+import PositionDiagram from "./PositionDiagram";
 
 const playerDetailRetriever = createSelector(retrieveChosenPlayer, (chosenPlayer) => ({
   chosenPlayer,
@@ -19,18 +21,6 @@ const playerDetailRetriever = createSelector(retrieveChosenPlayer, (chosenPlayer
 const actionDispatch = (dispatch: Dispatch) => ({
   setChosenPlayer: (data: Player | null) => dispatch(setChosenPlayer(data)),
 });
-
-const POSITION_LABEL: Record<string, string> = {
-  PITCHER: "Pitcher",
-  CATCHER: "Catcher",
-  BASEMAN1: "1st Base",
-  BASEMAN2: "2nd Base",
-  BASEMAN3: "3rd Base",
-  SHORTSTOP: "Shortstop",
-  LEFTFIELDER: "Left Field",
-  CENTERFIELDER: "Center Field",
-  RIGHTFIELDER: "Right Field",
-};
 
 function teamOf(value?: string | Team | null): Team | null {
   return value && typeof value === "object" ? value : null;
@@ -53,7 +43,8 @@ export default function PlayerDetail() {
     ? `${serverApi}/${chosenPlayer.playerImages[0]}`
     : "/icons/default-user.svg";
   const team = teamOf(chosenPlayer.teamId);
-  const positionLabel = POSITION_LABEL[chosenPlayer.playerPosition] ?? chosenPlayer.playerPosition;
+  const positionInfo = POSITION_INFO[chosenPlayer.playerPosition];
+  const positionLabel = positionInfo?.label ?? chosenPlayer.playerPosition;
 
   return (
     <div className="player-detail-page">
@@ -62,7 +53,7 @@ export default function PlayerDetail() {
         <Box className="player-hero-inner">
           <Box className="player-hero-media">
             <img src={imagePath} alt={chosenPlayer.playerNick} />
-            <span className="player-hero-position">{positionLabel}</span>
+            <span className="player-hero-position">{positionInfo?.abbr ?? chosenPlayer.playerPosition}</span>
           </Box>
 
           <Box className="player-hero-info">
@@ -110,6 +101,38 @@ export default function PlayerDetail() {
             )}
           </Box>
         </Box>
+      </section>
+
+      <section className="position-section">
+        <Box className="section-eyebrow">SCOUTING REPORT</Box>
+        <Box className="section-title">Position Guide</Box>
+
+        <Stack className="position-layout" direction="row">
+          <Box className="position-diagram-wrap">
+            <PositionDiagram activePosition={chosenPlayer.playerPosition} />
+          </Box>
+
+          <Box className="position-guide-list">
+            {POSITION_ORDER.map((pos) => {
+              const info = POSITION_INFO[pos];
+              const isActive = pos === chosenPlayer.playerPosition;
+              return (
+                <Box
+                  key={pos}
+                  className={isActive ? "position-guide-card active" : "position-guide-card"}
+                >
+                  <Box className="position-guide-abbr">{info.abbr}</Box>
+                  <Box className="position-guide-body">
+                    <span className="position-guide-title">
+                      {info.label} <em>({info.abbr})</em>
+                    </span>
+                    <p className="position-guide-desc">{info.description}</p>
+                  </Box>
+                </Box>
+              );
+            })}
+          </Box>
+        </Stack>
       </section>
     </div>
   );
