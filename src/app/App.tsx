@@ -24,6 +24,7 @@ import PlayersPage from "./screens/playersPage";
 import TeamsPage from "./screens/teamsPage";
 import GamesPage from "./screens/gamesPage";
 
+
 function App() {
   const location = useLocation();
 

@@ -1,78 +1,89 @@
 import React, { useEffect } from "react";
-import Statistics from "./Statistics";
-import PopularDishes from "./PopularDishes";
-import NewDishes from "./NewDishes";
-import Advertisement from "./Advertisement";
-import ActiveUsers from "./ActiveUsers";
-import Events from "./Events";
-import "../../../css/home.css";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { Dispatch } from "@reduxjs/toolkit";
-import { createSelector } from "reselect";
-import { setNewDishes, setPopularDishes, setTopUsers } from "./slice";
-import { retrievePopularDishes } from "./selector";
+import BigGame from "./BigGame";
+import PopularPlayers from "./PopularPlayers";
+import PopularTeams from "./PopularTeams";
+import FeaturedShop from "./FeaturedShop";
+import "../../../css/home.css";
+import {
+  setBigGame,
+  setPopularPlayers,
+  setPopularTeams,
+  setFeaturedProducts,
+} from "./slice";
+import { Game } from "../../../lib/types/game";
+import { Player } from "../../../lib/types/player";
+import { Team } from "../../../lib/types/team";
 import { Product } from "../../../lib/types/product";
+import GameService from "../../services/GameService";
+import PlayerService from "../../services/PlayerService";
+import TeamService from "../../services/TeamService";
 import ProductService from "../../services/ProductService";
-import { ProductCollection } from "../../../lib/enums/product.enum";
-import MemberService from "../../services/MemberService";
-import { Member } from "../../../lib/types/member";
+import { GameStatus } from "../../../lib/enums/game.enum";
+import { PlayerOrder } from "../../../lib/enums/player.enum";
+import { TeamOrder } from "../../../lib/enums/team.enum";
+import { ProductOrder } from "../../../lib/enums/product.enum";
+import { Direction } from "../../../lib/types/common";
 
-// REDUX SLICE & SELECTOR
 const actionDispatch = (dispatch: Dispatch) => ({
-  setPopularDishes: (data: Product[]) => dispatch(setPopularDishes(data)),
-  setNewDishes: (data: Product[]) => dispatch(setNewDishes(data)),
-  setTopUsers: (data: Member[]) => dispatch(setTopUsers(data)),
+  setBigGame: (data: Game | null) => dispatch(setBigGame(data)),
+  setPopularPlayers: (data: Player[]) => dispatch(setPopularPlayers(data)),
+  setPopularTeams: (data: Team[]) => dispatch(setPopularTeams(data)),
+  setFeaturedProducts: (data: Product[]) => dispatch(setFeaturedProducts(data)),
 });
 
 export default function HomePage() {
-  const { setPopularDishes, setNewDishes, setTopUsers } =
+  const { setBigGame, setPopularPlayers, setPopularTeams, setFeaturedProducts } =
     actionDispatch(useDispatch());
+
   useEffect(() => {
-    console.log("useEffect running");
+    const game = new GameService();
+    game
+      .getGames({ page: 1, limit: 1, gameStatus: GameStatus.UPCOMING })
+      .then((data) => setBigGame(data.list[0] ?? null))
+      .catch((err) => console.log(err));
+
+    const player = new PlayerService();
+    player
+      .getPlayers({
+        page: 1,
+        limit: 8,
+        order: PlayerOrder.VIEWS,
+        direction: Direction.DESC,
+      })
+      .then((data) => setPopularPlayers(data.list))
+      .catch((err) => console.log(err));
+
+    const team = new TeamService();
+    team
+      .getTeams({
+        page: 1,
+        limit: 8,
+        order: TeamOrder.SUBSCRIBERS,
+        direction: Direction.DESC,
+      })
+      .then((data) => setPopularTeams(data.list))
+      .catch((err) => console.log(err));
+
     const product = new ProductService();
-    // get popular products
     product
       .getProducts({
         page: 1,
-        limit: 4,
-        order: "productViews",
-        productCollection: ProductCollection.DISH,
+        limit: 8,
+        order: ProductOrder.VIEWS,
+        direction: Direction.DESC,
       })
-      .then((data) => {
-        setPopularDishes(data);
-      })
-      .catch((err) => console.log(err));
-
-    // get fresh products
-    product
-      .getProducts({
-        page: 1,
-        limit: 4,
-        order: "createdAt",
-        // productCollection: ProductCollection.DISH,
-      })
-      .then((data) => {
-        setNewDishes(data);
-      })
-      .catch((err) => console.log(err));
-
-    const member = new MemberService();
-    member
-      .getTopUsers()
-      .then((data) => {
-        setTopUsers(data)
-      })
+      .then((data) => setFeaturedProducts(data.list))
       .catch((err) => console.log(err));
   }, []);
 
   return (
     <div className={"homepage"}>
-      <Statistics />
-      <PopularDishes />
-      <NewDishes />
-      <Advertisement />
-      <ActiveUsers />
-      <Events />
+      <BigGame />
+      <PopularPlayers />
+      <PopularTeams />
+      <FeaturedShop />
     </div>
   );
 }

@@ -18,9 +18,10 @@ export interface AppRootState {
 
 // Homepage
 export interface HomePageState {
-  popularDishes: Product[];
-  newDishes: Product[];
-  topUsers: Member[];
+  bigGame: Game | null;
+  popularPlayers: Player[];
+  popularTeams: Team[];
+  featuredProducts: Product[];
 }
 
 // Products Page
