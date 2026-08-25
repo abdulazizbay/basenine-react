@@ -6,6 +6,8 @@ const initialState: TeamsPageState = {
   teamTotal: 0,
   chosenTeam: null,
   teamSubscribers: [],
+  teamPlayers: [],
+  teamUpcomingGames: [],
 };
 
 const teamsPageSlice = createSlice({
@@ -24,11 +26,23 @@ const teamsPageSlice = createSlice({
     setTeamSubscribers: (state, action) => {
       state.teamSubscribers = action.payload;
     },
+    setTeamPlayers: (state, action) => {
+      state.teamPlayers = action.payload;
+    },
+    setTeamUpcomingGames: (state, action) => {
+      state.teamUpcomingGames = action.payload;
+    },
   },
 });
 
-export const { setTeams, setTeamTotal, setChosenTeam, setTeamSubscribers } =
-  teamsPageSlice.actions;
+export const {
+  setTeams,
+  setTeamTotal,
+  setChosenTeam,
+  setTeamSubscribers,
+  setTeamPlayers,
+  setTeamUpcomingGames,
+} = teamsPageSlice.actions;
 
 const teamsPageReducer = teamsPageSlice.reducer;
 export default teamsPageReducer;

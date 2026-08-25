@@ -10,6 +10,7 @@ import theme from "./app/MaterialTheme";
 import { BrowserRouter as Router } from "react-router-dom";
 import ContextProvider from "./app/context/ContextProvider";
 import { SnackbarProvider } from "notistack";
+import ScrollToTop from "./app/components/scrollToTop";
 
 const container = document.getElementById("root");
 if (!container) throw new Error("Root container missing");
@@ -24,6 +25,7 @@ root.render(
         <ThemeProvider theme={theme}>
           <CssBaseline />
           <Router>
+            <ScrollToTop />
             <SnackbarProvider
               maxSnack={3}
               anchorOrigin={{

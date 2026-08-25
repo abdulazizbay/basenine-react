@@ -22,3 +22,13 @@ export const retrieveTeamSubscribers = createSelector(
   selectTeamsPage,
   (TeamsPage) => TeamsPage.teamSubscribers,
 );
+
+export const retrieveTeamPlayers = createSelector(
+  selectTeamsPage,
+  (TeamsPage) => TeamsPage.teamPlayers,
+);
+
+export const retrieveTeamUpcomingGames = createSelector(
+  selectTeamsPage,
+  (TeamsPage) => TeamsPage.teamUpcomingGames,
+);

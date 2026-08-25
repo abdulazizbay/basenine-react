@@ -44,6 +44,8 @@ export interface TeamsPageState {
   teamTotal: number;
   chosenTeam: Team | null;
   teamSubscribers: TeamSubscriber[];
+  teamPlayers: Player[];
+  teamUpcomingGames: Game[];
 }
 
 // Players Page

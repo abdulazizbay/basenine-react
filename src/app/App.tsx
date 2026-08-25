@@ -94,7 +94,7 @@ function App() {
         <Route path="/member-page">
           <UserPage />
         </Route>
-        <Route path="/">
+        <Route exact path="/">
           <HomePage />
         </Route>
         <Route path="/games">
