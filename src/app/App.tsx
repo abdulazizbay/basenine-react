@@ -9,7 +9,6 @@ import UserPage from "./screens/userPage";
 import HomeNavbar from "./components/headers/HomeNavbar";
 import OtherNavbar from "./components/headers/OtherNavbar";
 import Footer from "./components/footer";
-import HelpPage from "./screens/helpPage";
 import "../css/app.css";
 import "../css/navbar.css";
 import "../css/footer.css";
@@ -21,9 +20,9 @@ import { sweetErrorHandling, sweetTopSuccessAlert } from "../lib/sweetAlert";
 import { Messages } from "../lib/config";
 import MemberService from "./services/MemberService";
 import { useGlobals } from "./hooks/useGlobals";
-import PlayersPage from "./screens/playerPage";
-import TeamPage from "./screens/teamPage";
-import GamePage from "./screens/gamePage";
+import PlayersPage from "./screens/playersPage";
+import TeamsPage from "./screens/teamsPage";
+import GamesPage from "./screens/gamesPage";
 
 function App() {
   const location = useLocation();
@@ -94,20 +93,17 @@ function App() {
         <Route path="/member-page">
           <UserPage />
         </Route>
-        <Route path="/help">
-          <HelpPage />
-        </Route>
         <Route path="/">
           <HomePage />
         </Route>
         <Route path="/games">
-          < GamePage/>
+          <GamesPage />
         </Route>
         <Route path="/players">
           <PlayersPage />
         </Route>
         <Route path="/teams">
-          <TeamPage />
+          <TeamsPage />
         </Route>
       </Switch>
       <Footer />

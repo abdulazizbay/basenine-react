@@ -5,6 +5,7 @@ import {
   OrderInquiry,
   OrderitemInput,
   OrderUpdateInput,
+  Orders,
 } from "../../lib/types/order";
 import { CartItem } from "../../lib/types/search";
 
@@ -32,9 +33,8 @@ class OrderService {
     }
   }
 
-  public async getMyOrders(input: OrderInquiry): Promise<Order[]> {
+  public async getMyOrders(input: OrderInquiry): Promise<Orders> {
     try {
-      // axios.defaults.withCredentials = true;
       const url = `${this.path}/order/all`;
       const query = `?page=${input.page}&limit=${input.limit}&orderStatus=${input.orderStatus}`;
       const result = await axios.get(url + query, { withCredentials: true });

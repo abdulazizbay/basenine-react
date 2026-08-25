@@ -1,18 +1,19 @@
 import {
   ProductCollection,
-  ProductSize,
+  ProductOrder,
   ProductStatus,
 } from "../enums/product.enum";
+import { Team } from "./team";
+import { Direction } from "./common";
 
 export interface Product {
   _id: string;
   productStatus: ProductStatus;
   productCollection: ProductCollection;
+  teamId?: string | Team;
   productName: string;
   productPrice: number;
   productLeftCount: number;
-  productSize: ProductSize;
-  productVolume: number;
   productDesc?: string;
   productImages: string[];
   productViews: number;
@@ -20,10 +21,17 @@ export interface Product {
   updatedAt: Date;
 }
 
+export interface Products {
+  list: Product[];
+  metaCounter: { total: number }[];
+}
+
 export interface ProductInquiry {
-  order: string;
+  order: ProductOrder;
+  direction: Direction;
   page: number;
   limit: number;
   productCollection?: ProductCollection;
+  teamId?: string;
   search?: string;
 }

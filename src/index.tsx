@@ -9,10 +9,13 @@ import { CssBaseline, ThemeProvider } from "@mui/material";
 import theme from "./app/MaterialTheme";
 import { BrowserRouter as Router } from "react-router-dom";
 import ContextProvider from "./app/context/ContextProvider";
+import { SnackbarProvider } from "notistack";
 
 const container = document.getElementById("root");
 if (!container) throw new Error("Root container missing");
 const root = createRoot(container);
+
+
 
 root.render(
   <React.StrictMode>
@@ -21,7 +24,16 @@ root.render(
         <ThemeProvider theme={theme}>
           <CssBaseline />
           <Router>
-            <App />
+            <SnackbarProvider
+              maxSnack={3}
+              anchorOrigin={{
+                vertical: "bottom",
+                horizontal: "right",
+              }}
+              autoHideDuration={3000}
+            >
+              <App />
+            </SnackbarProvider>
           </Router>
         </ThemeProvider>
       </ContextProvider>

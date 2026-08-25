@@ -1,0 +1,16 @@
+export enum PlayerPosition {
+  PITCHER = "PITCHER",
+  CATCHER = "CATCHER",
+  BASEMAN1 = "BASEMAN1",
+  BASEMAN2 = "BASEMAN2",
+  BASEMAN3 = "BASEMAN3",
+  SHORTSTOP = "SHORTSTOP",
+  LEFTFIELDER = "LEFTFIELDER",
+  CENTERFIELDER = "CENTERFIELDER",
+  RIGHTFIELDER = "RIGHTFIELDER",
+}
+
+export enum PlayerOrder {
+  CREATED_AT = "createdAt",
+  VIEWS = "playerViews",
+}

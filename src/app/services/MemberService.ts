@@ -6,31 +6,14 @@ import {
   MemberInput,
   MemberUpdateInput,
 } from "../../lib/types/member";
+import { Favourite } from "../../lib/types/favourite";
 
 class MemberService {
   private readonly path: string;
   constructor() {
     this.path = serverApi;
   }
-  public async getTopUsers(): Promise<Member[]> {
-    try {
-      const url = this.path + "/member/top-users";
-      const result = await axios.get(url);
-      return result.data;
-    } catch (err) {
-      throw err;
-    }
-  }
-  public async getRestaurant(): Promise<Member> {
-    try {
-      const url = this.path + "/member/restaurant";
-      const result = await axios.get(url);
-      const restaurant: Member = result.data;
-      return restaurant;
-    } catch (err) {
-      throw err;
-    }
-  }
+
   public async signup(input: MemberInput): Promise<Member> {
     try {
       const url = this.path + "/member/signup";
@@ -66,14 +49,25 @@ class MemberService {
       throw err;
     }
   }
+
+  public async getMemberDetail(): Promise<Member & { favourites: Favourite[] }> {
+    try {
+      const url = this.path + "/member/detail";
+      const result = await axios.get(url, { withCredentials: true });
+      return result.data;
+    } catch (err) {
+      throw err;
+    }
+  }
+
   public async updateMember(input: MemberUpdateInput): Promise<Member> {
     try {
       const formData = new FormData();
       formData.append("memberNick", input.memberNick || "");
       formData.append("memberPhone", input.memberPhone || "");
-      formData.append("memberAdress", input.memberAdress || "");
+      if (input.memberAddress) formData.append("memberAddress", input.memberAddress);
       formData.append("memberDesc", input.memberDesc || "");
-      formData.append("memberImage", input.memberImage || "")
+      if (input.memberImage) formData.append("memberImage", input.memberImage);
 
       const result = await axios(`${serverApi}/member/update`, {
         method: "POST",

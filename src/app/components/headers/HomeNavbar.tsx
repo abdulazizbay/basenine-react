@@ -93,10 +93,6 @@ export default function HomeNavbar(props: HomeNavbarProps) {
                 </>
               )}
 
-              <NavLink to="/help" activeClassName="active">
-                Help
-              </NavLink>
-
               <Basket
                 cartItems={cartItems}
                 onRemove={onRemove}

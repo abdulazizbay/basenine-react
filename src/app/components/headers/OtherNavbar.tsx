@@ -99,10 +99,6 @@ export default function OtherNavbar(props: OtherNavbarProps) {
               </NavLink>
             )}
 
-            <NavLink to="/help" activeClassName="underline">
-              Help
-            </NavLink>
-
             {/* ==================== CART ==================== */}
 
             <Basket

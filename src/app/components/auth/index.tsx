@@ -1,40 +1,27 @@
 import React, { useState } from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import Modal from "@material-ui/core/Modal";
-import Backdrop from "@material-ui/core/Backdrop";
-import Fade from "@material-ui/core/Fade";
-import { Fab, Stack, TextField } from "@mui/material";
-import styled from "styled-components";
+
+import {
+  Box,
+  Button,
+  IconButton,
+  Modal,
+  Stack,
+  TextField,
+  Typography,
+} from "@mui/material";
+
+import CloseIcon from "@mui/icons-material/Close";
 import LoginIcon from "@mui/icons-material/Login";
+import PersonAddAltIcon from "@mui/icons-material/PersonAddAlt";
+
 import { T } from "../../../lib/types/common";
 import { Messages } from "../../../lib/config";
 import { LoginInput, MemberInput } from "../../../lib/types/member";
 import MemberService from "../../services/MemberService";
-import { sweetErrorHandling } from "../../../lib/sweetAlert";
+import { useSnackbar } from "notistack";
 import { useGlobals } from "../../hooks/useGlobals";
 
-const useStyles = makeStyles((theme) => ({
-  modal: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  paper: {
-    backgroundColor: theme.palette.background.paper,
-    border: "2px solid #000",
-    boxShadow: theme.shadows[5],
-    padding: theme.spacing(2, 2, 2),
-  },
-}));
-
-const ModalImg = styled.img`
-  width: 62%;
-  height: 100%;
-  border-radius: 10px;
-  background: #000;
-  margin-top: 9px;
-  margin-left: 10px;
-`;
+import "../../../css/auth.css";
 
 interface AuthenticationModalProps {
   signupOpen: boolean;
@@ -45,185 +32,303 @@ interface AuthenticationModalProps {
 
 export default function AuthenticationModal(props: AuthenticationModalProps) {
   const { signupOpen, loginOpen, handleSignupClose, handleLoginClose } = props;
-  const classes = useStyles();
+
   const [memberNick, setMemberNick] = useState<string>("");
   const [memberPhone, setMemberPhone] = useState<string>("");
   const [memberPassword, setPassword] = useState<string>("");
 
+  const { enqueueSnackbar } = useSnackbar();
   const { setAuthMember } = useGlobals();
 
-  /** HANDLERS **/
+  /* =========================================================
+     HANDLERS
+     ========================================================= */
+
   const handleUsername = (e: T) => {
     setMemberNick(e.target.value);
   };
+
   const handlePhone = (e: T) => {
     setMemberPhone(e.target.value);
   };
+
   const handlePassword = (e: T) => {
     setPassword(e.target.value);
   };
+
   const handlePasswordKeyDown = (e: T) => {
-    if (e.key === "Enter" && signupOpen) {
-      handleSignupRequest().then();
-    } else if (e.key === "Enter" && loginOpen) {
-      handleLoginRequest().then();
+    if (e.key === "Enter") {
+      if (signupOpen) {
+        handleSignupRequest().then();
+      } else if (loginOpen) {
+        handleLoginRequest().then();
+      }
     }
   };
+
   const handleSignupRequest = async () => {
     try {
       const isFulfill =
         memberNick !== "" && memberPhone !== "" && memberPassword !== "";
-      if (!isFulfill) throw new Error(Messages.error3);
+
+      if (!isFulfill) {
+        throw new Error(Messages.error3);
+      }
 
       const signupInput: MemberInput = {
-        memberNick: memberNick,
-        memberPhone: memberPhone,
-        memberPassword: memberPassword,
+        memberNick,
+        memberPhone,
+        memberPassword,
       };
+
       const member = new MemberService();
+
       const result = await member.signup(signupInput);
 
       setAuthMember(result);
+
       handleSignupClose();
+
+      // Clear fields
+      setMemberNick("");
+      setMemberPhone("");
+      setPassword("");
     } catch (err) {
       console.log(err);
+
       handleSignupClose();
-      sweetErrorHandling(err).then();
+
+      enqueueSnackbar(
+        err instanceof Error ? err.message : "Something went wrong",
+        {
+          variant: "error",
+        },
+      );
     }
   };
+
   const handleLoginRequest = async () => {
     try {
       const isFulfill = memberNick !== "" && memberPassword !== "";
-      if (!isFulfill) throw new Error(Messages.error3);
+
+      if (!isFulfill) {
+        throw new Error(Messages.error3);
+      }
 
       const loginInput: LoginInput = {
-        memberNick: memberNick,
-        memberPassword: memberPassword,
+        memberNick,
+        memberPassword,
       };
+
       const member = new MemberService();
+
       const result = await member.login(loginInput);
+
       setAuthMember(result);
 
       handleLoginClose();
+
+      // Clear fields
+      setMemberNick("");
+      setPassword("");
     } catch (err) {
       console.log(err);
+
       handleLoginClose();
-      sweetErrorHandling(err).then();
+
+      enqueueSnackbar(
+        err instanceof Error ? err.message : "Something went wrong",
+        {
+          variant: "error",
+        },
+      );
     }
   };
-  return (
-    <div>
-      <Modal
-        aria-labelledby="transition-modal-title"
-        aria-describedby="transition-modal-description"
-        className={classes.modal}
-        open={signupOpen}
-        onClose={handleSignupClose}
-        closeAfterTransition
-        BackdropComponent={Backdrop}
-        BackdropProps={{
-          timeout: 500,
-        }}
-      >
-        <Fade in={signupOpen}>
-          <Stack
-            className={classes.paper}
-            direction={"row"}
-            sx={{ width: "800px" }}
-          >
-            <ModalImg src={"/img/auth.webp"} alt="camera" />
-            <Stack sx={{ marginLeft: "69px", alignItems: "center" }}>
-              <h2>Signup Form</h2>
-              <TextField
-                sx={{ marginTop: "7px" }}
-                id="outlined-basic"
-                label="username"
-                variant="outlined"
-                onChange={handleUsername}
-              />
-              <TextField
-                sx={{ my: "17px" }}
-                id="outlined-basic"
-                label="phone number"
-                variant="outlined"
-                onChange={handlePhone}
-              />
-              <TextField
-                id="outlined-basic"
-                label="password"
-                variant="outlined"
-                onChange={handlePassword}
-                onKeyDown={handlePasswordKeyDown}
-              />
-              <Fab
-                sx={{ marginTop: "30px", width: "120px" }}
-                variant="extended"
-                color="primary"
-                onClick={handleSignupRequest}
-              >
-                <LoginIcon sx={{ mr: 1 }} />
-                Signup
-              </Fab>
-            </Stack>
-          </Stack>
-        </Fade>
-      </Modal>
 
-      <Modal
-        aria-labelledby="transition-modal-title"
-        aria-describedby="transition-modal-description"
-        className={classes.modal}
-        open={loginOpen}
-        onClose={handleLoginClose}
-        closeAfterTransition
-        BackdropComponent={Backdrop}
-        BackdropProps={{
-          timeout: 500,
-        }}
-      >
-        <Fade in={loginOpen}>
-          <Stack
-            className={classes.paper}
-            direction={"row"}
-            sx={{ width: "700px" }}
-          >
-            <ModalImg src={"/img/auth.webp"} alt="camera" />
-            <Stack
-              sx={{
-                marginLeft: "65px",
-                marginTop: "25px",
-                alignItems: "center",
-              }}
-            >
-              <h2>Login Form</h2>
+  /* =========================================================
+     MODAL
+     ========================================================= */
+
+  const isSignup = signupOpen;
+
+  const open = signupOpen || loginOpen;
+
+  const handleClose = isSignup ? handleSignupClose : handleLoginClose;
+
+  return (
+    <Modal
+      open={open}
+      onClose={handleClose}
+      className="auth-modal"
+      slotProps={{
+        backdrop: {
+          className: "auth-backdrop",
+        },
+      }}
+    >
+      <Box className="auth-modal-box">
+        {/* CLOSE BUTTON */}
+
+        <IconButton className="auth-close" onClick={handleClose}>
+          <CloseIcon />
+        </IconButton>
+
+        {/* LEFT SIDE */}
+
+        <Box className="auth-visual">
+          <Box className="auth-visual-overlay" />
+
+          <Box className="auth-visual-content">
+            <Box className="auth-brand">
+              <Box className="auth-brand-icon">
+                <span>9</span>
+              </Box>
+
+              <Box className="auth-brand-text">
+                <span className="auth-brand-name">basenine</span>
+
+                <span className="auth-brand-subtitle">BASEBALL PLATFORM</span>
+              </Box>
+            </Box>
+
+            <Box className="auth-visual-copy">
+              <Typography className="auth-eyebrow">
+                {isSignup ? "JOIN THE GAME" : "WELCOME BACK"}
+              </Typography>
+
+              <Typography className="auth-visual-title">
+                {isSignup ? (
+                  <>
+                    Your baseball
+                    <br />
+                    journey starts
+                    <br />
+                    <span>here.</span>
+                  </>
+                ) : (
+                  <>
+                    Welcome back
+                    <br />
+                    to the
+                    <br />
+                    <span>game.</span>
+                  </>
+                )}
+              </Typography>
+
+              <Typography className="auth-visual-description">
+                Follow teams, discover players, track games, and stay connected
+                with BaseNine.
+              </Typography>
+            </Box>
+
+            <Box className="auth-number">09</Box>
+          </Box>
+        </Box>
+
+        {/* RIGHT SIDE */}
+
+        <Box className="auth-form-container">
+          <Stack className="auth-form">
+            {/* HEADER */}
+
+            <Box className="auth-form-header">
+              <Box className="auth-mobile-logo">
+                <Box className="auth-brand-icon">
+                  <span>9</span>
+                </Box>
+              </Box>
+
+              <Typography className="auth-form-title">
+                {isSignup ? "Create your account" : "Welcome back"}
+              </Typography>
+
+              <Typography className="auth-form-description">
+                {isSignup
+                  ? "Join BaseNine and follow the game."
+                  : "Sign in to continue to BaseNine."}
+              </Typography>
+            </Box>
+
+            {/* FORM */}
+
+            <Stack className="auth-fields">
               <TextField
-                id="outlined-basic"
-                label="username"
-                variant="outlined"
-                sx={{ my: "10px" }}
+                fullWidth
+                label="Username"
+                value={memberNick}
                 onChange={handleUsername}
+                variant="outlined"
+                autoComplete="username"
+                className="auth-input"
               />
+
+              {isSignup && (
+                <TextField
+                  fullWidth
+                  label="Phone number"
+                  value={memberPhone}
+                  onChange={handlePhone}
+                  variant="outlined"
+                  autoComplete="tel"
+                  className="auth-input"
+                />
+              )}
+
               <TextField
-                id={"outlined-basic"}
-                label={"password"}
-                variant={"outlined"}
-                type={"password"}
+                fullWidth
+                label="Password"
+                value={memberPassword}
                 onChange={handlePassword}
                 onKeyDown={handlePasswordKeyDown}
+                type="password"
+                autoComplete={isSignup ? "new-password" : "current-password"}
+                variant="outlined"
+                className="auth-input"
               />
-              <Fab
-                sx={{ marginTop: "27px", width: "120px" }}
-                variant={"extended"}
-                color={"primary"}
-                onClick={handleLoginRequest}
-              >
-                <LoginIcon sx={{ mr: 1 }} />
-                Login
-              </Fab>
             </Stack>
+
+            {/* BUTTON */}
+
+            <Button
+              fullWidth
+              className="auth-submit"
+              onClick={isSignup ? handleSignupRequest : handleLoginRequest}
+              endIcon={isSignup ? <PersonAddAltIcon /> : <LoginIcon />}
+            >
+              {isSignup ? "Create account" : "Login"}
+            </Button>
+
+            {/* FOOTER */}
+
+            <Box className="auth-form-footer">
+              <span>
+                {isSignup
+                  ? "Already have an account?"
+                  : "Don't have an account?"}
+              </span>
+
+              <button
+                type="button"
+                onClick={() => {
+                  if (isSignup) {
+                    handleSignupClose();
+                  } else {
+                    handleLoginClose();
+                  }
+                }}
+              >
+                {isSignup ? "Login" : "Sign up"}
+              </button>
+            </Box>
+
+            <Box className="auth-security">
+              <span className="auth-security-dot" />
+              Secure BaseNine account
+            </Box>
           </Stack>
-        </Fade>
-      </Modal>
-    </div>
+        </Box>
+      </Box>
+    </Modal>
   );
 }
