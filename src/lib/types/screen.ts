@@ -1,4 +1,3 @@
-import { Member } from "./member";
 import { Order } from "./order";
 import { Product } from "./product";
 import { Team } from "./team";
@@ -26,9 +25,10 @@ export interface HomePageState {
 
 // Products Page
 export interface ProductsPageState {
-  restaurant: Member | null;
-  chosenProduct: Product | null;
   products: Product[];
+  productTotal: number;
+  chosenProduct: Product | null;
+  teamOptions: Pick<Team, "_id" | "teamNick">[];
 }
 
 // Orders Page

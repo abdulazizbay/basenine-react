@@ -1,375 +1,260 @@
 import React, { ChangeEvent, useEffect, useState } from "react";
-import { Box, Button, Container, Stack } from "@mui/material";
-import SearchIcon from "@mui/icons-material/Search";
-import MonetizationOnIcon from "@mui/icons-material/MonetizationOn";
-import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
-import Badge from "@mui/material/Badge";
+import { Box, Stack } from "@mui/material";
 import Pagination from "@mui/material/Pagination";
-import PaginationItem from "@mui/material/PaginationItem";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+import SearchIcon from "@mui/icons-material/Search";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import SwapVertIcon from "@mui/icons-material/SwapVert";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import { useDispatch, useSelector } from "react-redux";
 import { Dispatch } from "@reduxjs/toolkit";
 import { createSelector } from "reselect";
-import { setProducts } from "./slice";
-import { Product, ProductInquiry } from "../../../lib/types/product";
-import { retrieveProducts } from "./selector";
-import ProductService from "../../services/ProductService";
-import { ProductCollection } from "../../../lib/enums/product.enum";
-import { useDispatch, useSelector } from "react-redux";
-import { serverApi } from "../../../lib/config";
 import { useHistory } from "react-router-dom";
+import { setProducts, setProductTotal, setTeamOptions } from "./slice";
+import { retrieveProducts, retrieveProductTotal, retrieveTeamOptions } from "./selector";
+import { Product, ProductInquiry } from "../../../lib/types/product";
+import { Team } from "../../../lib/types/team";
+import { ProductCollection, ProductOrder } from "../../../lib/enums/product.enum";
+import { Direction } from "../../../lib/types/common";
+import ProductService from "../../services/ProductService";
+import TeamService from "../../services/TeamService";
+import { serverApi } from "../../../lib/config";
 import { CartItem } from "../../../lib/types/search";
 
-// REDUX SLICE & SELECTOR
+const productsRetriever = createSelector(
+  retrieveProducts,
+  retrieveProductTotal,
+  retrieveTeamOptions,
+  (products, productTotal, teamOptions) => ({ products, productTotal, teamOptions }),
+);
+
 const actionDispatch = (dispatch: Dispatch) => ({
   setProducts: (data: Product[]) => dispatch(setProducts(data)),
+  setProductTotal: (data: number) => dispatch(setProductTotal(data)),
+  setTeamOptions: (data: Pick<Team, "_id" | "teamNick">[]) => dispatch(setTeamOptions(data)),
 });
 
-const productsRetriever = createSelector(retrieveProducts, (products) => ({
-  products,
-}));
+const SORT_OPTIONS: { label: string; value: ProductOrder }[] = [
+  { label: "Newest", value: ProductOrder.CREATED_AT },
+  { label: "Price", value: ProductOrder.PRICE },
+  { label: "Most Viewed", value: ProductOrder.VIEWS },
+];
+
+const COLLECTION_OPTIONS: { label: string; value?: ProductCollection }[] = [
+  { label: "All", value: undefined },
+  { label: "Jerseys", value: ProductCollection.JERSEYS },
+  { label: "Shoes", value: ProductCollection.SHOES },
+  { label: "Balls", value: ProductCollection.BALLS },
+  { label: "Bags", value: ProductCollection.BAGS },
+  { label: "Caps", value: ProductCollection.CAPS },
+  { label: "Socks", value: ProductCollection.SOCKS },
+  { label: "Water Bottles", value: ProductCollection.WATER_BOTTLES },
+  { label: "Other", value: ProductCollection.OTHER },
+];
+
+function teamOf(value?: string | Team | null): Team | null {
+  return value && typeof value === "object" ? value : null;
+}
 
 interface ProductsProps {
   onAdd: (item: CartItem) => void;
 }
 
-const products = [
-  { productName: "Cutlet", imagePath: "/img/cutlet.webp" },
-  { productName: "Kebab", imagePath: "/img/kebab-fresh.webp" },
-  { productName: "Kebab", imagePath: "/img/kebab.webp" },
-  { productName: "Lavash", imagePath: "/img/lavash.webp" },
-  { productName: "Lavash", imagePath: "/img/lavash.webp" },
-  { productName: "Cutlet", imagePath: "/img/cutlet.webp" },
-  { productName: "Kebab", imagePath: "/img/kebab.webp" },
-  { productName: "Kebab", imagePath: "/img/kebab-fresh.webp" },
-];
+const LIMIT = 12;
 
-export default function Products(props: ProductsProps) {
-  const {onAdd} = props
-  const { setProducts } = actionDispatch(useDispatch());
-  const { products } = useSelector(productsRetriever);
+export default function Products({ onAdd }: ProductsProps) {
+  const { setProducts, setProductTotal, setTeamOptions } = actionDispatch(useDispatch());
+  const { products, productTotal, teamOptions } = useSelector(productsRetriever);
+  const history = useHistory();
+
   const [searchText, setSearchText] = useState<string>("");
-
   const [productSearch, setProductSearch] = useState<ProductInquiry>({
     page: 1,
-    limit: 8,
-    order: "createdAt",
-    productCollection: ProductCollection.DISH,
-    search: "",
+    limit: LIMIT,
+    order: ProductOrder.CREATED_AT,
+    direction: Direction.DESC,
   });
-  const history = useHistory();
+
+  useEffect(() => {
+    const team = new TeamService();
+    team.getTeamOptions().then(setTeamOptions).catch((err) => console.log(err));
+  }, []);
+
   useEffect(() => {
     const product = new ProductService();
     product
       .getProducts(productSearch)
       .then((data) => {
-        console.log(data);
-        setProducts(data);
+        setProducts(data.list);
+        setProductTotal(data.metaCounter[0]?.total ?? 0);
       })
       .catch((err) => console.log(err));
   }, [productSearch]);
 
   useEffect(() => {
-    if (searchText === "") {
-      productSearch.search = "";
-      setProductSearch({ ...productSearch });
-    }
+    const timer = setTimeout(() => {
+      setProductSearch((prev) =>
+        (prev.search ?? "") === searchText ? prev : { ...prev, page: 1, search: searchText },
+      );
+    }, 400);
+    return () => clearTimeout(timer);
   }, [searchText]);
 
-  // Handlers
-  const searchCollectionHanlder = (collection: ProductCollection) => {
-    productSearch.page = 1;
-    productSearch.productCollection = collection;
-    setProductSearch({ ...productSearch });
+  const handleSort = (order: ProductOrder) => {
+    setProductSearch((prev) => ({ ...prev, page: 1, order }));
   };
 
-  const searchOrderHandler = (order: string) => {
-    productSearch.page = 1;
-    productSearch.order = order;
-    setProductSearch({ ...productSearch });
-  };
-  const searchProductHandler = () => {
-    productSearch.search = searchText;
-    setProductSearch({ ...productSearch });
+  const toggleDirection = () => {
+    setProductSearch((prev) => ({
+      ...prev,
+      page: 1,
+      direction: prev.direction === Direction.DESC ? Direction.ASC : Direction.DESC,
+    }));
   };
 
-  const paginationHandler = (e: ChangeEvent<any>, value: number) => {
-    productSearch.page = value;
-    setProductSearch({ ...productSearch });
+  const handleCollectionFilter = (collection?: ProductCollection) => {
+    setProductSearch((prev) => ({ ...prev, page: 1, productCollection: collection }));
   };
-  const chooseDishHandler = (id: string) => {
-    history.push(`/products/${id}`);
+
+  const handleTeamFilter = (value: string) => {
+    setProductSearch((prev) => ({ ...prev, page: 1, teamId: value || undefined }));
   };
+
+  const handlePageChange = (_: ChangeEvent<unknown>, page: number) => {
+    setProductSearch((prev) => ({ ...prev, page }));
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const pageCount = Math.max(1, Math.ceil(productTotal / LIMIT));
+
   return (
-    <div className={"products"}>
-      <Container>
-        <Stack flexDirection={"column"} alignItems={"center"}>
-          <Stack className={"avatar-big-box"}>
-            <Stack className={"top-text"}>
-              <p>Bumarak Restaurant</p>
-              <Stack className={"single-search-big-box"}>
-                <input
-                  type={"search"}
-                  className={"single-search-input"}
-                  name={"singleResearch"}
-                  placeholder={"Type here"}
-                  value={searchText}
-                  onChange={(e) => {
-                    setSearchText(e.target.value);
-                  }}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") searchProductHandler();
-                  }}
-                />
-                <Button
-                  className={"single-button-search"}
-                  variant="contained"
-                  endIcon={<SearchIcon />}
-                  onClick={searchProductHandler}
+    <div className="shop-list-page">
+      <section className="shop-hero">
+        <Box className="shop-hero-inner">
+          <Box className="shop-hero-eyebrow">TEAM STORE</Box>
+          <Box className="shop-hero-title">Shop</Box>
+          <Box className="shop-hero-desc">
+            Official gear from every team in the league — jerseys, caps, and everything in between.
+          </Box>
+
+          <Stack className="shop-toolbar" direction="row" flexWrap="wrap">
+            <Stack className="shop-search" direction="row" alignItems="center">
+              <SearchIcon />
+              <input
+                placeholder="Search products..."
+                value={searchText}
+                onChange={(e) => setSearchText(e.target.value)}
+              />
+            </Stack>
+
+            <Stack className="shop-controls" direction="row" alignItems="center" flexWrap="wrap">
+              <select
+                className="shop-team-filter"
+                value={productSearch.teamId ?? ""}
+                onChange={(e) => handleTeamFilter(e.target.value)}
+              >
+                <option value="">All Teams</option>
+                {teamOptions.map((team) => (
+                  <option key={team._id} value={team._id}>
+                    {team.teamNick}
+                  </option>
+                ))}
+              </select>
+
+              {SORT_OPTIONS.map((opt) => (
+                <button
+                  key={opt.value}
+                  className={productSearch.order === opt.value ? "sort-chip active" : "sort-chip"}
+                  onClick={() => handleSort(opt.value)}
                 >
-                  Search
-                </Button>
-              </Stack>
+                  {opt.label}
+                </button>
+              ))}
+              <button className="direction-toggle" onClick={toggleDirection}>
+                <SwapVertIcon />
+                {productSearch.direction === Direction.DESC ? "DESC" : "ASC"}
+              </button>
             </Stack>
           </Stack>
 
-          <Stack className={"dishes-filter-section"}>
-            <Stack className={"dishes-filter-box"}>
-              <Button
-                variant={"contained"}
-                color={
-                  productSearch.order === "createdAt" ? "primary" : "secondary"
+          <Stack className="shop-collections" direction="row" flexWrap="wrap">
+            {COLLECTION_OPTIONS.map((opt) => (
+              <button
+                key={opt.label}
+                className={
+                  productSearch.productCollection === opt.value ? "sort-chip active" : "sort-chip"
                 }
-                className={"order"}
-                onClick={() => searchOrderHandler("createdAt")}
+                onClick={() => handleCollectionFilter(opt.value)}
               >
-                New
-              </Button>
-              <Button
-                variant={"contained"}
-                color={
-                  productSearch.order === "productPrice"
-                    ? "primary"
-                    : "secondary"
-                }
-                className={"order"}
-                onClick={() => searchOrderHandler("productPrice")}
-              >
-                Price
-              </Button>
-              <Button
-                variant={"contained"}
-                color={
-                  productSearch.order === "productViews"
-                    ? "primary"
-                    : "secondary"
-                }
-                className={"order"}
-                onClick={() => searchOrderHandler("productViews")}
-              >
-                Views
-              </Button>
-            </Stack>
+                {opt.label}
+              </button>
+            ))}
           </Stack>
+        </Box>
+      </section>
 
-          <Stack className={"list-category-section"}>
-            <Stack className={"product-category"}>
-              <div className={"category-main"}>
-                <Button
-                  variant={"contained"}
-                  color={
-                    productSearch.productCollection === ProductCollection.OTHER
-                      ? "primary"
-                      : "secondary"
-                  }
-                  onClick={() =>
-                    searchCollectionHanlder(ProductCollection.OTHER)
-                  }
-                >
-                  Other
-                </Button>
-                <Button
-                  variant={"contained"}
-                  color={
-                    productSearch.productCollection ===
-                    ProductCollection.DESSERT
-                      ? "primary"
-                      : "secondary"
-                  }
-                  onClick={() =>
-                    searchCollectionHanlder(ProductCollection.DESSERT)
-                  }
-                >
-                  Dessert
-                </Button>
-                <Button
-                  onClick={() =>
-                    searchCollectionHanlder(ProductCollection.DRINK)
-                  }
-                  variant={"contained"}
-                  color={
-                    productSearch.productCollection === ProductCollection.DRINK
-                      ? "primary"
-                      : "secondary"
-                  }
-                >
-                  Drink
-                </Button>
-                <Button
-                  onClick={() =>
-                    searchCollectionHanlder(ProductCollection.SALAD)
-                  }
-                  variant={"contained"}
-                  color={
-                    productSearch.productCollection === ProductCollection.SALAD
-                      ? "primary"
-                      : "secondary"
-                  }
-                >
-                  Salad
-                </Button>
-                <Button
-                  onClick={() =>
-                    searchCollectionHanlder(ProductCollection.DISH)
-                  }
-                  variant={"contained"}
-                  color={
-                    productSearch.productCollection === ProductCollection.DISH
-                      ? "primary"
-                      : "secondary"
-                  }
-                >
-                  Dish
-                </Button>
-              </div>
-            </Stack>
-
-            <Stack className={"product-wrapper"}>
-              {products.length !== 0 ? (
-                products.map((product: Product) => {
-                  const imagePath = `${serverApi}/${product.productImages[0]}`;
-                  const sizeVolume =
-                    product.productCollection === ProductCollection.DRINK
-                      ? product.productVolume + "litre"
-                      : product.productSize + "size";
-                  return (
-                    <Stack
-                      key={product._id}
-                      className={"product-card"}
-                      onClick={() => chooseDishHandler(product._id)}
-                    >
-                      <Stack
-                        className={"product-img"}
-                        sx={{ backgroundImage: `url(${imagePath})` }}
+      <section className="shop-grid-section">
+        <Box className="shop-grid-inner">
+          {products.length !== 0 ? (
+            <Box className="shop-grid">
+              {products.map((product: Product) => {
+                const imagePath = product.productImages?.[0]
+                  ? `${serverApi}/${product.productImages[0]}`
+                  : "/icons/noimage-list.svg";
+                const team = teamOf(product.teamId);
+                const outOfStock = product.productLeftCount <= 0;
+                return (
+                  <Box
+                    key={product._id}
+                    className="shop-tile"
+                    onClick={() => history.push(`/products/${product._id}`)}
+                  >
+                    <Box className="shop-tile-media">
+                      <img src={imagePath} alt={product.productName} />
+                      <span className="shop-tile-collection">{product.productCollection}</span>
+                      <button
+                        className="shop-tile-add"
+                        disabled={outOfStock}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onAdd({
+                            _id: product._id,
+                            quantity: 1,
+                            name: product.productName,
+                            price: product.productPrice,
+                            image: product.productImages[0],
+                          });
+                        }}
                       >
-                        <div className={"product-sale"}>{sizeVolume}</div>
-                        <Button className={"shop-btn"}
-                          onClick={(e)=>{
-                            onAdd({
-                              _id:  product._id,
-                              quantity: 1,
-                              name: product.productName,
-                              price: product.productPrice ,
-                              image: product.productImages[0]
-                            })
-                            e.stopPropagation()
-                          }}
-                        >
-                          <img
-                            src={"/icons/shopping-cart.svg"}
-                            style={{ display: "flex" }}
-                          />
-                        </Button>
-                        <Button className={"view-btn"} sx={{ right: "36px" }}>
-                          <Badge
-                            badgeContent={product.productViews}
-                            color="secondary"
-                          >
-                            <RemoveRedEyeIcon
-                              sx={{
-                                color:
-                                  product.productViews === 0 ? "gray" : "white",
-                              }}
-                            />
-                          </Badge>
-                        </Button>
-                      </Stack>
-                      <Box className={"product-desc"}>
-                        <span className={"product-title"}>
-                          {product.productName}
+                        <ShoppingCartIcon />
+                      </button>
+                      {outOfStock && <span className="shop-tile-soldout">Sold Out</span>}
+                    </Box>
+                    <Box className="shop-tile-body">
+                      {team && <span className="shop-tile-team">{team.teamNick}</span>}
+                      <span className="shop-tile-name">{product.productName}</span>
+                      <Stack className="shop-tile-footer" direction="row" justifyContent="space-between">
+                        <span className="shop-tile-price">${product.productPrice.toFixed(2)}</span>
+                        <span className="shop-tile-views">
+                          <VisibilityIcon />
+                          {product.productViews.toLocaleString()}
                         </span>
-                        <div className={"product-desc"}>
-                          <MonetizationOnIcon />
-                          {product.productPrice}
-                        </div>
-                      </Box>
-                    </Stack>
-                  );
-                })
-              ) : (
-                <Box className="no-data">Products are not available!</Box>
-              )}
+                      </Stack>
+                    </Box>
+                  </Box>
+                );
+              })}
+            </Box>
+          ) : (
+            <Box className="no-data">No products match these filters</Box>
+          )}
+
+          {productTotal > LIMIT && (
+            <Stack className="shop-pagination" direction="row" justifyContent="center">
+              <Pagination count={pageCount} page={productSearch.page} onChange={handlePageChange} />
             </Stack>
-          </Stack>
-
-          <Stack className={"pagination-section"}>
-            <Pagination
-              count={
-                products.length !== 0
-                  ? productSearch.page + 1
-                  : productSearch.page
-              }
-              page={productSearch.page}
-              renderItem={(item) => (
-                <PaginationItem
-                  components={{
-                    previous: ArrowBackIcon,
-                    next: ArrowForwardIcon,
-                  }}
-                  {...item}
-                  color={"secondary"}
-                />
-              )}
-              onChange={paginationHandler}
-            />
-          </Stack>
-        </Stack>
-      </Container>
-
-      <div className={"brands-logo"}>
-        <Container className={"family-brands"}>
-          <Box className={"category-title"}>Our Family Brands</Box>
-          <Stack className={"brand-list"}>
-            <Box className={"review-box"}>
-              <img src={"/img/gurme.webp"} />
-            </Box>
-            <Box className={"review-box"}>
-              <img src={"/img/seafood.webp"} />
-            </Box>
-            <Box className={"review-box"}>
-              <img src={"/img/doner.webp"} />
-            </Box>
-            <Box className={"review-box"}>
-              <img src={"/img/sweets.webp"} />
-            </Box>
-          </Stack>
-        </Container>
-      </div>
-
-      <div className={"address"}>
-        <Container>
-          <Stack className={"address-area"}>
-            <Box className={"title"}>Our address</Box>
-            <iframe
-              style={{ marginTop: "60px" }}
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d96326.03685561026!2d28.92022666528895!3d41.02112846139867!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x14cab82bea99445f%3A0x6ed7f4baceb4476c!2sMaiden&#39;s%20Tower!5e0!3m2!1sen!2skr!4v1757106097524!5m2!1sen!2skr"
-              width="1320"
-              height="500"
-              referrerPolicy="no-referrer-when-downgrade"
-            ></iframe>
-          </Stack>
-        </Container>
-      </div>
+          )}
+        </Box>
+      </section>
     </div>
   );
 }

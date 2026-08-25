@@ -1,15 +1,15 @@
 import React from "react";
-import { Box, Button, Stack } from "@mui/material";
-import IconButton from "@mui/material/IconButton";
+import { Box, Button, IconButton, Menu, Stack } from "@mui/material";
 import Badge from "@mui/material/Badge";
-import Menu from "@mui/material/Menu";
-import CancelIcon from "@mui/icons-material/Cancel";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import CloseIcon from "@mui/icons-material/Close";
+import AddIcon from "@mui/icons-material/Add";
+import RemoveIcon from "@mui/icons-material/Remove";
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import { useHistory } from "react-router-dom";
+import { useSnackbar } from "notistack";
 import { CartItem } from "../../../lib/types/search";
 import { Messages, serverApi } from "../../../lib/config";
-import { sweetErrorHandling } from "../../../lib/sweetAlert";
 import { useGlobals } from "../../hooks/useGlobals";
 import OrderService from "../../services/OrderService";
 
@@ -26,26 +26,19 @@ export default function Basket(props: BasketProps) {
 
   const { authMember, setOrderBuilder } = useGlobals();
   const history = useHistory();
-  const itemsPrice = cartItems.reduce(
-    (a: number, c: CartItem) => a + c.quantity * c.price,
-    0,
-  );
+  const { enqueueSnackbar } = useSnackbar();
+
+  const itemsPrice = cartItems.reduce((a: number, c: CartItem) => a + c.quantity * c.price, 0);
   const shippingCost: number = itemsPrice < 100 ? 5 : 0;
-  const totalPrice = (itemsPrice + shippingCost).toFixed(1);
+  const totalPrice = itemsPrice + shippingCost;
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
-  /** HANDLERS **/
+  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => setAnchorEl(e.currentTarget);
+  const handleClose = () => setAnchorEl(null);
 
-  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-    setAnchorEl(e.currentTarget);
-  };
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-
-  const proceedOrderHanlder = async () => {
+  const proceedOrderHandler = async () => {
     try {
       handleClose();
       if (!authMember) throw new Error(Messages.error2);
@@ -56,131 +49,111 @@ export default function Basket(props: BasketProps) {
       setOrderBuilder(new Date());
       history.push("/orders");
     } catch (err) {
-      console.log(err);
-      sweetErrorHandling(err).then();
+      enqueueSnackbar(err instanceof Error ? err.message : Messages.error1, {
+        variant: "error",
+      });
     }
   };
 
   return (
-    <Box className={"hover-line"}>
+    <Box className="basket-trigger">
       <IconButton
         aria-label="cart"
-        id="basic-button"
-        aria-controls={open ? "basic-menu" : undefined}
         aria-haspopup="true"
-        aria-expanded={open ? "true" : undefined}
         onClick={handleClick}
+        className="basket-icon-button"
       >
-        <Badge badgeContent={cartItems.length} color="secondary">
-          <img src={"/icons/shopping-cart.svg"} />
+        <Badge badgeContent={cartItems.length} className="basket-badge">
+          <ShoppingCartIcon />
         </Badge>
       </IconButton>
+
       <Menu
         anchorEl={anchorEl}
-        id="account-menu"
         open={open}
         onClose={handleClose}
-        // onClick={handleClose}
-        PaperProps={{
-          elevation: 0,
-          sx: {
-            overflow: "visible",
-            filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
-            mt: 1.5,
-            "& .MuiAvatar-root": {
-              width: 32,
-              height: 32,
-              ml: -0.5,
-              mr: 1,
-            },
-            "&:before": {
-              content: '""',
-              display: "block",
-              position: "absolute",
-              top: 0,
-              right: 14,
-              width: 10,
-              height: 10,
-              bgcolor: "background.paper",
-              transform: "translateY(-50%) rotate(45deg)",
-              zIndex: 0,
-            },
-          },
-        }}
         transformOrigin={{ horizontal: "right", vertical: "top" }}
         anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
+        PaperProps={{ className: "basket-menu-paper" }}
       >
-        <Stack className={"basket-frame"}>
-          <Box className={"all-check-box"}>
-            {cartItems.length === 0 ? (
-              <div>Cart is empty!</div>
-            ) : (
-              <Stack flexDirection={"row"}>
-                <div>Cart Products:</div>
-                <DeleteForeverIcon
-                  sx={{ ml: "5px", cursor: "pointer" }}
-                  color={"primary"}
-                  onClick={() => onDeleteAll()}
-                />
-              </Stack>
+        <Stack className="basket-panel">
+          <Stack
+            className="basket-panel-header"
+            direction="row"
+            alignItems="center"
+            justifyContent="space-between"
+          >
+            <span>Your Cart</span>
+            {cartItems.length !== 0 && (
+              <button className="basket-clear" onClick={onDeleteAll}>
+                <DeleteOutlineIcon />
+                Clear
+              </button>
             )}
-            <div>Cart is empty!</div>
-          </Box>
+          </Stack>
 
-          <Box className={"orders-main-wrapper"}>
-            <Box className={"orders-wrapper"}>
-              {cartItems.map((item: CartItem) => {
-                const imagePath = `${serverApi}/${item.image}`;
-                return (
-                  <Box className={"basket-info-box"} key={item._id}>
-                    <div className={"cancel-btn"}>
-                      <CancelIcon
-                        color={"primary"}
-                        onClick={() => onDelete(item)}
-                      />
-                    </div>
-
-                    <img src={imagePath} className={"product-img"} />
-
-                    <span className={"product-name"}>{item.name}</span>
-
-                    <p className={"product-price"}>
-                      ${item.price} x {item.quantity}
-                    </p>
-
-                    <Box sx={{ minWidth: 120 }}>
-                      <div className="col-2">
-                        <button
-                          onClick={() => onRemove(item)}
-                          className="remove"
-                        >
-                          -
-                        </button>
-                        <button onClick={() => onAdd(item)} className="add">
-                          +
-                        </button>
-                      </div>
-                    </Box>
-                  </Box>
-                );
-              })}
-            </Box>
-          </Box>
           {cartItems.length !== 0 ? (
-            <Box className={"basket-order"}>
-              <span className={"price"}>
-                Total: ${totalPrice} ({itemsPrice} +{shippingCost})
-              </span>
-              <Button
-                startIcon={<ShoppingCartIcon />}
-                variant={"contained"}
-                onClick={proceedOrderHanlder}
-              >
-                Order
-              </Button>
-            </Box>
+            <>
+              <Stack className="basket-items">
+                {cartItems.map((item: CartItem) => {
+                  const imagePath = `${serverApi}/${item.image}`;
+                  return (
+                    <Box className="basket-item" key={item._id}>
+                      <img src={imagePath} alt={item.name} className="basket-item-image" />
+
+                      <Box className="basket-item-info">
+                        <span className="basket-item-name">{item.name}</span>
+                        <span className="basket-item-price">${item.price.toFixed(2)}</span>
+                      </Box>
+
+                      <Stack className="basket-item-qty" direction="row" alignItems="center">
+                        <button onClick={() => onRemove(item)}>
+                          <RemoveIcon />
+                        </button>
+                        <span>{item.quantity}</span>
+                        <button onClick={() => onAdd(item)}>
+                          <AddIcon />
+                        </button>
+                      </Stack>
+
+                      <button className="basket-item-remove" onClick={() => onDelete(item)}>
+                        <CloseIcon />
+                      </button>
+                    </Box>
+                  );
+                })}
+              </Stack>
+
+              <Stack className="basket-summary">
+                <Stack className="basket-summary-row" direction="row" justifyContent="space-between">
+                  <span>Subtotal</span>
+                  <span>${itemsPrice.toFixed(2)}</span>
+                </Stack>
+                <Stack className="basket-summary-row" direction="row" justifyContent="space-between">
+                  <span>Shipping</span>
+                  <span>{shippingCost === 0 ? "Free" : `$${shippingCost.toFixed(2)}`}</span>
+                </Stack>
+                <Stack
+                  className="basket-summary-row total"
+                  direction="row"
+                  justifyContent="space-between"
+                >
+                  <span>Total</span>
+                  <span>${totalPrice.toFixed(2)}</span>
+                </Stack>
+
+                <Button className="basket-checkout" onClick={proceedOrderHandler}>
+                  <ShoppingCartIcon />
+                  Checkout
+                </Button>
+              </Stack>
+            </>
           ) : (
-            ""
+            <Box className="basket-empty">
+              <ShoppingCartIcon />
+              <span>Your cart is empty</span>
+              <p>Browse the shop and add some gear.</p>
+            </Box>
           )}
         </Stack>
       </Menu>
