@@ -75,7 +75,7 @@ export default function HomeNavbar(props: HomeNavbarProps) {
                 Games
               </NavLink>
               <NavLink to="/players" activeClassName="active">
-                players
+                Players
               </NavLink>
               <NavLink to="/products" activeClassName="active">
                 Shop
