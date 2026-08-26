@@ -1,0 +1,26 @@
+import axios from "axios";
+import { serverApi } from "../../lib/config";
+import type { GameInquiry, Games } from "../../lib/types/game";
+
+class GameService {
+	private readonly path: string;
+	constructor() {
+		this.path = serverApi;
+	}
+	public async getGames(inquiry: GameInquiry): Promise<Games> {
+		try {
+			let url = `${this.path}/game/all?page=${inquiry.page}&limit=${inquiry.limit}`;
+			if (inquiry.gameStatus) url += `&gameStatus=${inquiry.gameStatus}`;
+			if (inquiry.gameAddress) url += `&gameAddress=${inquiry.gameAddress}`;
+			if (inquiry.startDate) url += `&startDate=${new Date(inquiry.startDate).toISOString()}`;
+			if (inquiry.endDate) url += `&endDate=${new Date(inquiry.endDate).toISOString()}`;
+
+			const result = await axios.get(url);
+			return result.data;
+		} catch (err) {
+			throw err;
+		}
+	}
+}
+
+export default GameService;

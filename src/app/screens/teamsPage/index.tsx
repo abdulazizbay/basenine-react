@@ -34,6 +34,7 @@ export default function TeamsPage() {
 	return (
 		<Container className="py-16">
 			<SectionHeader eyebrow="The league" title="Teams" />
+			<p className="mb-4 text-xs text-bn-muted">{teamTotal} teams found</p>
 			<TeamsGrid
 				teams={teams}
 				setTeamSearch={setTeamSearch}
