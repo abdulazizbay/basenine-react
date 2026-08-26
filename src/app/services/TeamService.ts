@@ -9,7 +9,7 @@ class TeamService {
 	}
 	public async getTeams(inquiry: TeamInquiry): Promise<Teams> {
 		try {
-			let url = `${this.path}/teams/all?order=${inquiry.order}&direction=${inquiry.direction}&limit=${inquiry.limit}&page=${inquiry.page}`;
+			let url = `${this.path}/team/all?order=${inquiry.order}&direction=${inquiry.direction}&limit=${inquiry.limit}&page=${inquiry.page}`;
 			if (inquiry.search) url += `&search=${inquiry.search}`;
 
 			const result = await axios.get(url);
@@ -20,4 +20,4 @@ class TeamService {
 	}
 }
 
-export default TeamService
+export default TeamService;
