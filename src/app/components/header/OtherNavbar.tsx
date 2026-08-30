@@ -6,7 +6,6 @@ const linkClassName = ({ isActive }: { isActive: boolean }) =>
     isActive ? "text-bn-white" : "text-bn-muted hover:text-bn-white"
   }`;
 
-// Solid-bar variant — see HomeNavbar for the overlay variant used on "/".
 export default function OtherNavbar() {
   return (
     <header className="sticky top-0 z-20 border-b border-bn-border bg-bn-bg/90 backdrop-blur">

@@ -10,6 +10,7 @@ import HomeNavbar from './components/header/HomeNavbar';
 import OtherNavbar from './components/header/OtherNavbar';
 import NotFoundPage from './screens/notFoundPage';
 import Footer from './components/footer';
+import AuthModal from './components/auth';
 
 function App() {
 	const location = useLocation();
@@ -29,6 +30,7 @@ function App() {
 				</Routes>
 			</main>
 			<Footer />
+			<AuthModal/>
 		</div>
 	);
 }

@@ -2,7 +2,7 @@ import axios from 'axios';
 import { serverApi } from '../../lib/config';
 import type { LoginInput, Member, MemberInput } from '../../lib/types/member';
 
-class TeamService {
+class MemberService {
 	private readonly path: string;
 	constructor() {
 		this.path = serverApi;
@@ -32,4 +32,4 @@ class TeamService {
 	}
 }
 
-export default TeamService;
+export default MemberService;
