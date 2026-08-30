@@ -60,3 +60,4 @@ const useBasket = () => {
 		onDelete,
 	};
 };
+export default useBasket

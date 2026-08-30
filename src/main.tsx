@@ -5,14 +5,17 @@ import { BrowserRouter } from 'react-router-dom';
 import './index.css';
 import { AuthProvider } from './app/context/AuthContext.tsx';
 import { AuthModalProvider } from './app/context/AuthModalContext.tsx';
+import { CartProvider } from './app/context/CartContext.tsx';
 
 createRoot(document.getElementById('root')!).render(
 	<StrictMode>
 		<AuthProvider>
 			<AuthModalProvider>
-				<BrowserRouter>
-					<App />
-				</BrowserRouter>
+				<CartProvider>
+					<BrowserRouter>
+						<App />
+					</BrowserRouter>
+				</CartProvider>
 			</AuthModalProvider>
 		</AuthProvider>
 	</StrictMode>,
