@@ -2,7 +2,7 @@ import { useState } from 'react';
 import type { CartItem } from '../../lib/types/search';
 
 const useBasket = () => {
-	const [cartItems, setCartItems] = useState(() => {
+	const [cartItems, setCartItems] = useState<CartItem[]>(() => {
 		const cartJson = localStorage.getItem('cartData');
 		return cartJson ? JSON.parse(cartJson) : [];
 	});
@@ -24,6 +24,8 @@ const useBasket = () => {
 	};
 	const onRemove = (input: CartItem) => {
 		const exist = cartItems.find((item: CartItem) => item._id === input._id);
+		if (!exist) return;
+
 		if (exist.quantity === 1) {
 			const cartUpdate = cartItems.filter(
 				(item: CartItem) => item._id !== input._id,
@@ -60,4 +62,4 @@ const useBasket = () => {
 		onDelete,
 	};
 };
-export default useBasket
+export default useBasket;
