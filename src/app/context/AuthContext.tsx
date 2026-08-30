@@ -14,7 +14,7 @@ export const AuthContext = createContext<AuthContextValue | undefined>(
 export function AuthProvider({ children }: { children: ReactNode }) {
 	const cookies = new Cookies();
 	if (!cookies.get('accessToken')) localStorage.removeItem('memberData');
-	const [authMember, setAuthMember] = useState<Member | null>(
+	const [authMember, setAuthMember] = useState<Member | null>(()=>
 		localStorage.getItem('memberData')
 			? JSON.parse(localStorage.getItem('memberData') as string)
 			: null,

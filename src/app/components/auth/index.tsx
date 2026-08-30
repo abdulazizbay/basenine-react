@@ -17,27 +17,32 @@ export default function AuthModal() {
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
-		console.log('handleSubmit');
+		try {
+			const member = isSignup
+				? await memberService.signup({
+						memberNick,
+						memberPhone,
+						memberPassword,
+					})
+				: await memberService.login({
+						memberNick,
+						memberPassword,
+					});
 
-		const member = isSignup
-			? await memberService.signup({
-					memberNick,
-					memberPhone,
-					memberPassword,
-				})
-			: await memberService.login({
-					memberNick,
-					memberPassword,
-				});
-
-		if (member) {
-			setAuthMember(member);
-			close();
+			if (member) {
+				setAuthMember(member);
+				close();
+			}
+		} catch (err) {
+			console.log(err);
 		}
 	};
 
 	return (
-		<form onSubmit={handleSubmit}>
+		<form
+			onSubmit={handleSubmit}
+			className="fixed inset-0 z-50 flex items-center justify-center "
+		>
 			<h2>{isSignup ? 'Sign up' : 'Login'}</h2>
 
 			<input
@@ -62,6 +67,7 @@ export default function AuthModal() {
 			/>
 
 			<button type="submit">Submit</button>
+			<div onClick={close}>x</div>
 		</form>
 	);
 }
