@@ -10,4 +10,5 @@ export const NAV_LINKS: NavLinkItem[] = [
   { label: "Players", to: "/players" },
   { label: "Games", to: "/games" },
   { label: "Shop", to: "/products" },
+  { label: "My Page", to: "/user" },
 ];
