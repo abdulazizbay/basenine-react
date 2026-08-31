@@ -3,6 +3,7 @@ import Card from '../ui/Card';
 import ImageWithFallback from '../ui/ImageWithFallback';
 import { useCart } from '../../hooks/useCart';
 import { useNavigate } from 'react-router-dom';
+import OrderService from '../../services/OrderService';
 
 interface BasketProps {
 	onClose: () => void;
@@ -17,6 +18,18 @@ export default function Basket({ onClose }: BasketProps) {
 	);
 	const shippingCost = itemsPrice < 100 ? 5 : 0;
 	const totalPrice = itemsPrice + shippingCost;
+
+	const proceedOrderHanlder = async () => {
+		try {
+			const orderService = new OrderService();
+			await orderService.createOrder(cartItems);
+
+			onDeleteAll();
+			navigate('/orders');
+		} catch (err) {
+			console.log(err);
+		}
+	};
 
 	return (
 		<Card className="absolute right-0 top-full z-30 mt-3 w-80 overflow-hidden p-4 shadow-xl">
@@ -89,7 +102,7 @@ export default function Basket({ onClose }: BasketProps) {
 				</div>
 			</div>
 
-			<Button onClick={() => navigate('/orders')} className="mt-4 w-full">
+			<Button onClick={proceedOrderHanlder} className="mt-4 w-full">
 				Checkout
 			</Button>
 		</Card>

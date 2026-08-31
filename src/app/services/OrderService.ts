@@ -4,6 +4,7 @@ import type {
 	Order,
 	OrderInquiry,
 	OrderitemInput,
+	Orders,
 	OrderUpdateInput,
 } from '../../lib/types/order';
 import type { CartItem } from '../../lib/types/cart';
@@ -13,11 +14,11 @@ class OrderService {
 	constructor() {
 		this.path = serverApi;
 	}
-	public async getOrders(inquiry: OrderInquiry): Promise<Order> {
+	public async getOrders(inquiry: OrderInquiry): Promise<Orders> {
 		try {
 			let url = `${this.path}/order/all?orderStatus=${inquiry.orderStatus}&limit=${inquiry.limit}&page=${inquiry.page}`;
 			const result = await axios.get(url, { withCredentials: true });
-			return result.data.result;
+			return result.data;
 		} catch (err) {
 			throw err;
 		}
@@ -33,7 +34,7 @@ class OrderService {
 			const result = await axios.post(url, orderItems, {
 				withCredentials: true,
 			});
-			return result.data.result;
+			return result.data;
 		} catch (err) {
 			throw err;
 		}
