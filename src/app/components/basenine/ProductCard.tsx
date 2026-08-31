@@ -1,4 +1,5 @@
 import type { Product } from '../../../lib/types/product';
+import { useCart } from '../../hooks/useCart';
 import Card from '../ui/Card';
 import ImageWithFallback from '../ui/ImageWithFallback';
 
@@ -7,6 +8,7 @@ interface ProductCardProps {
 }
 
 export default function ProductCard({ product }: ProductCardProps) {
+	const { onAdd } = useCart();
 	const outOfStock = product.productLeftCount <= 0;
 
 	return (
@@ -32,7 +34,19 @@ export default function ProductCard({ product }: ProductCardProps) {
 					>
 						{outOfStock ? 'Sold out' : `${product.productLeftCount} left`}
 					</span>
-					<div>Add to cart</div>
+					<div
+						onClick={() =>
+							onAdd({
+								_id: product._id,
+								quantity: 1,
+								name: product.productName,
+								price: product.productPrice,
+								image: product.productImages[0],
+							})
+						}
+					>
+						Add to cart
+					</div>
 				</div>
 			</div>
 		</Card>

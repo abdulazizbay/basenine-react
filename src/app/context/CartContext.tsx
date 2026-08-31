@@ -1,5 +1,5 @@
 import { createContext, type ReactNode } from 'react';
-import type { CartItem } from '../../lib/types/search';
+import type { CartItem } from '../../lib/types/cart';
 import useBasket from '../hooks/useBasket';
 
 interface CartContextValue {

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import type { CartItem } from '../../lib/types/search';
+import type { CartItem } from '../../lib/types/cart';
 
 const useBasket = () => {
 	const [cartItems, setCartItems] = useState<CartItem[]>(() => {
