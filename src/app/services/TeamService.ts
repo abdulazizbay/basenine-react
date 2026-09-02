@@ -24,7 +24,7 @@ class TeamService {
 	}
 	public async getTeam(teamId: string): Promise<Team> {
 		try {
-			let url = `${this.path}/team/${teamId}`;
+			const url = `${this.path}/team/${teamId}`;
 			const result = await axios.get(url, { withCredentials: true });
 			return result.data.result;
 		} catch (err) {
@@ -37,7 +37,7 @@ class TeamService {
 		limit: number,
 	): Promise<TeamSubscribers> {
 		try {
-			let url = `${this.path}/team/${teamId}/subscribers?page=${page}&limit=${limit}`;
+			const url = `${this.path}/team/${teamId}/subscribers?page=${page}&limit=${limit}`;
 			const result = await axios.get(url, { withCredentials: true });
 			return result.data;
 		} catch (err) {
@@ -46,7 +46,7 @@ class TeamService {
 	}
 	public async subscribeTeam(teamId: string): Promise<TeamSubscriber> {
 		try {
-			let url = `${this.path}/team/${teamId}/subcribe`;
+			const url = `${this.path}/team/${teamId}/subscribe`;
 			const result = await axios.get(url, { withCredentials: true });
 			return result.data.result;
 		} catch (err) {
@@ -56,14 +56,13 @@ class TeamService {
 
 	public async unSubscribeTeam(teamId: string): Promise<boolean> {
 		try {
-			let url = `${this.path}/team/${teamId}/subcribe`;
+			const url = `${this.path}/team/${teamId}/unsubscribe`;
 			const result = await axios.get(url, { withCredentials: true });
 			return result.data.data;
 		} catch (err) {
 			throw err;
 		}
 	}
-
 }
 
 export default TeamService;
