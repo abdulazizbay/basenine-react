@@ -37,15 +37,17 @@ export default function ProductCard({ product }: ProductCardProps) {
 							{outOfStock ? 'Sold out' : `${product.productLeftCount} left`}
 						</span>
 						<div
-							onClick={() =>
+							onClick={(e) => {
+								e.preventDefault();
+								e.stopPropagation();
 								onAdd({
 									_id: product._id,
 									quantity: 1,
 									name: product.productName,
 									price: product.productPrice,
 									image: product.productImages[0],
-								})
-							}
+								});
+							}}
 						>
 							Add to cart
 						</div>
