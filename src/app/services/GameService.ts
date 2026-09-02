@@ -14,6 +14,7 @@ class GameService {
 			if (inquiry.gameAddress) url += `&gameAddress=${inquiry.gameAddress}`;
 			if (inquiry.startDate) url += `&startDate=${new Date(inquiry.startDate).toISOString()}`;
 			if (inquiry.endDate) url += `&endDate=${new Date(inquiry.endDate).toISOString()}`;
+			if (inquiry.teamId) url += `&teamId=${inquiry.teamId}`;
 
 			const result = await axios.get(url);
 			return result.data;

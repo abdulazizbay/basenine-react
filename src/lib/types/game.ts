@@ -25,4 +25,5 @@ export interface GameInquiry {
   gameStatus?: GameStatus;
   startDate?: Date;
   endDate?: Date;
+  teamId? :string
 }

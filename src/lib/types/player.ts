@@ -27,4 +27,5 @@ export interface PlayerInquiry {
   page: number;
   limit: number;
   search?: string;
+  teamId?: string
 }

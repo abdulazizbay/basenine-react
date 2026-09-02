@@ -11,6 +11,7 @@ class PlayerService {
 		try {
 			let url = `${this.path}/player/all?order=${inquiry.order}&direction=${inquiry.direction}&limit=${inquiry.limit}&page=${inquiry.page}`;
 			if (inquiry.search) url += `&search=${inquiry.search}`;
+			if (inquiry.teamId) url += `&teamId=${inquiry.teamId}`;
 
 			const result = await axios.get(url);
 			return result.data.result;
