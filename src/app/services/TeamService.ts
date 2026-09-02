@@ -1,6 +1,10 @@
 import axios from 'axios';
 import { serverApi } from '../../lib/config';
-import type { TeamInquiry, Teams } from '../../lib/types/team';
+import type { Team, TeamInquiry, Teams } from '../../lib/types/team';
+import type {
+	TeamSubscriber,
+	TeamSubscribers,
+} from '../../lib/types/favourite';
 
 class TeamService {
 	private readonly path: string;
@@ -18,6 +22,48 @@ class TeamService {
 			throw err;
 		}
 	}
+	public async getTeam(teamId: string): Promise<Team> {
+		try {
+			let url = `${this.path}/team/${teamId}`;
+			const result = await axios.get(url, { withCredentials: true });
+			return result.data.result;
+		} catch (err) {
+			throw err;
+		}
+	}
+	public async getTeamSubscribers(
+		teamId: string,
+		page: number,
+		limit: number,
+	): Promise<TeamSubscribers> {
+		try {
+			let url = `${this.path}/team/${teamId}/subscribers?page=${page}&limit=${limit}`;
+			const result = await axios.get(url, { withCredentials: true });
+			return result.data;
+		} catch (err) {
+			throw err;
+		}
+	}
+	public async subscribeTeam(teamId: string): Promise<TeamSubscriber> {
+		try {
+			let url = `${this.path}/team/${teamId}/subcribe`;
+			const result = await axios.get(url, { withCredentials: true });
+			return result.data.result;
+		} catch (err) {
+			throw err;
+		}
+	}
+
+	public async unSubscribeTeam(teamId: string): Promise<boolean> {
+		try {
+			let url = `${this.path}/team/${teamId}/subcribe`;
+			const result = await axios.get(url, { withCredentials: true });
+			return result.data.data;
+		} catch (err) {
+			throw err;
+		}
+	}
+
 }
 
 export default TeamService;
