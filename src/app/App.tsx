@@ -23,14 +23,14 @@ function App() {
 					<Route path="/games" element={<GamesPage />} />
 					<Route path="/orders" element={<OrdersPage />} />
 					<Route path="/players" element={<PlayersPage />} />
-					<Route path="/products" element={<ProductsPage />} />
+					<Route path="/products/*" element={<ProductsPage />} />
 					<Route path="/teams/*" element={<TeamsPage />} />
 					<Route path="/user" element={<UsersPage />} />
 					<Route path="*" element={<NotFoundPage />} />
 				</Routes>
 			</main>
 			<Footer />
-			<AuthModal/>
+			<AuthModal />
 		</div>
 	);
 }

@@ -1,6 +1,10 @@
 import axios from 'axios';
 import { serverApi } from '../../lib/config';
-import type { ProductInquiry, Products } from '../../lib/types/product';
+import type {
+	Product,
+	ProductInquiry,
+	Products,
+} from '../../lib/types/product';
 
 class ProductService {
 	private readonly path: string;
@@ -22,6 +26,17 @@ class ProductService {
 			throw err;
 		}
 	}
+
+	public async getProduct(productId: string): Promise<Product> {
+		try {
+			const url = `${this.path}/product/${productId}`;
+			const result = await axios.get(url, { withCredentials: true });
+			return result.data.result;
+		} catch (err) {
+			throw err;
+		}
+	}
+	
 }
 
 export default ProductService;

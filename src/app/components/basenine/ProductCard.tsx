@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import type { Product } from '../../../lib/types/product';
 import { useCart } from '../../hooks/useCart';
 import Card from '../ui/Card';
@@ -12,43 +13,45 @@ export default function ProductCard({ product }: ProductCardProps) {
 	const outOfStock = product.productLeftCount <= 0;
 
 	return (
-		<Card className="overflow-hidden">
-			<ImageWithFallback
-				src={product.productImages[0]}
-				alt={product.productName}
-				className="h-40 w-full"
-			/>
-			<div className="p-4">
-				<p className="text-[11px] uppercase tracking-wide text-bn-muted">
-					{product.productCollection}
-				</p>
-				<p className="mt-1 font-display text-base font-semibold text-bn-white">
-					{product.productName}
-				</p>
-				<div className="mt-3 flex items-center justify-between">
-					<span className="text-sm font-semibold text-bn-white">
-						${product.productPrice.toFixed(2)}
-					</span>
-					<span
-						className={`text-xs font-medium ${outOfStock ? 'text-bn-red' : 'text-bn-muted'}`}
-					>
-						{outOfStock ? 'Sold out' : `${product.productLeftCount} left`}
-					</span>
-					<div
-						onClick={() =>
-							onAdd({
-								_id: product._id,
-								quantity: 1,
-								name: product.productName,
-								price: product.productPrice,
-								image: product.productImages[0],
-							})
-						}
-					>
-						Add to cart
+		<Link to={`/products/${product._id}`}>
+			<Card className="overflow-hidden">
+				<ImageWithFallback
+					src={product.productImages[0]}
+					alt={product.productName}
+					className="h-40 w-full"
+				/>
+				<div className="p-4">
+					<p className="text-[11px] uppercase tracking-wide text-bn-muted">
+						{product.productCollection}
+					</p>
+					<p className="mt-1 font-display text-base font-semibold text-bn-white">
+						{product.productName}
+					</p>
+					<div className="mt-3 flex items-center justify-between">
+						<span className="text-sm font-semibold text-bn-white">
+							${product.productPrice.toFixed(2)}
+						</span>
+						<span
+							className={`text-xs font-medium ${outOfStock ? 'text-bn-red' : 'text-bn-muted'}`}
+						>
+							{outOfStock ? 'Sold out' : `${product.productLeftCount} left`}
+						</span>
+						<div
+							onClick={() =>
+								onAdd({
+									_id: product._id,
+									quantity: 1,
+									name: product.productName,
+									price: product.productPrice,
+									image: product.productImages[0],
+								})
+							}
+						>
+							Add to cart
+						</div>
 					</div>
 				</div>
-			</div>
-		</Card>
+			</Card>
+		</Link>
 	);
 }
