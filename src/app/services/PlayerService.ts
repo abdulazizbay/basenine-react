@@ -1,11 +1,20 @@
 import axios from 'axios';
 import { serverApi } from '../../lib/config';
-import type { PlayerInquiry, Players } from '../../lib/types/player';
+import type { Player, PlayerInquiry, Players } from '../../lib/types/player';
 
 class PlayerService {
 	private readonly path: string;
 	constructor() {
 		this.path = serverApi;
+	}
+	public async getPlayer(playerId: string): Promise<Player> {
+		try {
+			const url = `${this.path}/player/${playerId}`;
+			const result = await axios.get(url, { withCredentials: true });
+			return result.data.result;
+		} catch (err) {
+			throw err;
+		}
 	}
 	public async getPlayers(inquiry: PlayerInquiry): Promise<Players> {
 		try {
