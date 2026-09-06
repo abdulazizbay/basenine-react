@@ -1,6 +1,5 @@
 import Container from "../../components/ui/Container";
 import SectionHeader from "../../components/ui/SectionHeader";
-import EmptyState from "../../components/ui/EmptyState";
 import GamesGrid from "./GamesGrid";
 import { useEffect, useState } from "react";
 import GameService from "../../services/GameService";
@@ -26,17 +25,24 @@ export default function Games() {
 	}, [gameSearch]);
 
 	return (
-		<Container className="py-16">
-			<SectionHeader eyebrow="Schedule" title="Games" />
-			<p className="mb-4 text-xs text-bn-muted">{gameTotal} games found</p>
-			{games.length !== 0 ? (
-				<GamesGrid games={games} setGameSearch={setGameSearch} />
-			) : (
-				<EmptyState
-					title="No games scheduled yet"
-					description="Upcoming and past games will appear here."
+		<div>
+			<section className="bg-linear-to-b from-bn-surface to-bn-bg pb-8 pt-32 sm:pt-40">
+				<Container>
+					<SectionHeader eyebrow="Schedule" title="Games" />
+					<p className="-mt-6 max-w-lg text-sm text-bn-muted">
+						Every matchup on the calendar — upcoming, live, and finished.
+					</p>
+				</Container>
+			</section>
+
+			<Container className="py-12">
+				<p className="mb-4 text-xs text-bn-muted">{gameTotal} games found</p>
+				<GamesGrid
+					games={games}
+					gameSearch={gameSearch}
+					setGameSearch={setGameSearch}
 				/>
-			)}
-		</Container>
+			</Container>
+		</div>
 	);
 }

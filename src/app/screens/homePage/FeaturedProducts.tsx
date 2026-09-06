@@ -3,6 +3,7 @@ import Container from "../../components/ui/Container";
 import SectionHeader from "../../components/ui/SectionHeader";
 import ImageWithFallback from "../../components/ui/ImageWithFallback";
 import CartIcon from "../../components/header/BasketIcon";
+import { useCart } from "../../hooks/useCart";
 import { serverApi } from "../../../lib/config";
 import { teamOf } from "../../../lib/utils/relations";
 import type { Product } from "../../../lib/types/product";
@@ -12,6 +13,8 @@ interface FeaturedProductsProps {
 }
 
 export default function FeaturedProducts({ products }: FeaturedProductsProps) {
+  const { onAdd } = useCart();
+
   return (
     <Container className="pb-20">
       <SectionHeader
@@ -22,6 +25,7 @@ export default function FeaturedProducts({ products }: FeaturedProductsProps) {
       <div className="grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-4">
         {products.map((product) => {
           const team = teamOf(product.teamId);
+          const outOfStock = product.productLeftCount <= 0;
           return (
             <Link
               key={product._id}
@@ -38,9 +42,23 @@ export default function FeaturedProducts({ products }: FeaturedProductsProps) {
                   {product.productCollection}
                 </span>
                 <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-bn-bg/45 opacity-0 transition-opacity group-hover:opacity-100">
-                  <span className="flex h-11 w-11 items-center justify-center rounded-full bg-bn-red text-white shadow-[0_10px_30px_rgba(229,72,77,0.5)]">
+                  <button
+                    disabled={outOfStock}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      onAdd({
+                        _id: product._id,
+                        quantity: 1,
+                        name: product.productName,
+                        price: product.productPrice,
+                        image: product.productImages[0],
+                      });
+                    }}
+                    className="pointer-events-auto flex h-11 w-11 items-center justify-center rounded-full bg-bn-red text-white shadow-[0_10px_30px_rgba(229,72,77,0.5)] transition-transform hover:scale-110 disabled:cursor-not-allowed disabled:bg-bn-surface-2 disabled:text-bn-muted disabled:shadow-none"
+                  >
                     <CartIcon className="h-5 w-5" />
-                  </span>
+                  </button>
                 </div>
               </div>
               <div className="flex flex-col gap-1 p-4">

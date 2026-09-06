@@ -12,7 +12,7 @@ export default function Products() {
 	const [productTotal, setProductTotal] = useState<number>(0);
 	const [productSearch, setProductSearch] = useState<ProductInquiry>({
 		order: ProductOrder.CREATED_AT,
-		direction: Direction.ASC,
+		direction: Direction.DESC,
 		limit: 8,
 		page: 1,
 	});
@@ -29,10 +29,27 @@ export default function Products() {
 	}, [productSearch]);
 
 	return (
-		<Container className="py-16">
-			<SectionHeader eyebrow="Shop" title="Products" />
-			<p className="mb-4 text-xs text-bn-muted">{productTotal} products found</p>
-			<ProductsGrid products={products} setProductSearch={setProductSearch} />
-		</Container>
+		<div>
+			<section className="bg-linear-to-b from-bn-surface to-bn-bg pb-8 pt-32 sm:pt-40">
+				<Container>
+					<SectionHeader eyebrow="Team store" title="Shop" />
+					<p className="-mt-6 max-w-lg text-sm text-bn-muted">
+						Official gear from every team in the league — jerseys, caps, and
+						everything in between.
+					</p>
+				</Container>
+			</section>
+
+			<Container className="py-12">
+				<p className="mb-4 text-xs text-bn-muted">
+					{productTotal} products found
+				</p>
+				<ProductsGrid
+					products={products}
+					productSearch={productSearch}
+					setProductSearch={setProductSearch}
+				/>
+			</Container>
+		</div>
 	);
 }

@@ -1,18 +1,18 @@
-import Container from "../../components/ui/Container";
-import SectionHeader from "../../components/ui/SectionHeader";
-import PlayersGrid from "./PlayersGrid";
-import { useEffect, useState } from "react";
-import PlayerService from "../../services/PlayerService";
-import { PlayerOrder } from "../../../lib/enums/player.enum";
-import { Direction } from "../../../lib/types/common";
-import type { Player, PlayerInquiry } from "../../../lib/types/player";
+import Container from '../../components/ui/Container';
+import SectionHeader from '../../components/ui/SectionHeader';
+import PlayersGrid from './PlayersGrid';
+import { useEffect, useState } from 'react';
+import PlayerService from '../../services/PlayerService';
+import { PlayerOrder } from '../../../lib/enums/player.enum';
+import { Direction } from '../../../lib/types/common';
+import type { Player, PlayerInquiry } from '../../../lib/types/player';
 
 export default function Players() {
 	const [players, setPlayers] = useState<Player[]>([]);
 	const [playerTotal, setPlayerTotal] = useState<number>(0);
 	const [playerSearch, setPlayerSearch] = useState<PlayerInquiry>({
 		order: PlayerOrder.CREATED_AT,
-		direction: Direction.ASC,
+		direction: Direction.DESC,
 		limit: 8,
 		page: 1,
 	});
@@ -29,10 +29,27 @@ export default function Players() {
 	}, [playerSearch]);
 
 	return (
-		<Container className="py-16">
-			<SectionHeader eyebrow="The roster" title="Players" />
-			<p className="mb-4 text-xs text-bn-muted">{playerTotal} players found</p>
-			<PlayersGrid players={players} setPlayerSearch={setPlayerSearch} />
-		</Container>
+		<div>
+			<section className="bg-linear-to-b from-bn-surface to-bn-bg pb-8 pt-32 sm:pt-40">
+				<Container>
+					<SectionHeader eyebrow="The roster" title="Players" />
+					<p className="-mt-6 max-w-lg text-sm text-bn-muted">
+						Scout every player in the league, from rising rookies to seasoned
+						veterans.
+					</p>
+				</Container>
+			</section>
+
+			<Container className="py-12">
+				<p className="mb-4 text-xs text-bn-muted">
+					{playerTotal} players found
+				</p>
+				<PlayersGrid
+					players={players}
+					playerSearch={playerSearch}
+					setPlayerSearch={setPlayerSearch}
+				/>
+			</Container>
+		</div>
 	);
 }

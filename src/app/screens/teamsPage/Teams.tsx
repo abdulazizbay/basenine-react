@@ -12,7 +12,7 @@ export default function Teams() {
 	const [teamTotal, setTeamTotal] = useState<number>(0);
 	const [teamSearch, setTeamSearch] = useState<TeamInquiry>({
 		order: TeamOrder.CREATED_AT,
-		direction: Direction.ASC,
+		direction: Direction.DESC,
 		limit: 8,
 		page: 1,
 	});
@@ -27,18 +27,28 @@ export default function Teams() {
 				),
 			)
 			.catch((err) => console.log(err));
-
 	}, [teamSearch]);
 
-
 	return (
-		<Container className="py-16">
-			<SectionHeader eyebrow="The league" title="Teams" />
-			<p className="mb-4 text-xs text-bn-muted">{teamTotal} teams found</p>
-			<TeamsGrid
-				teams={teams}
-				setTeamSearch={setTeamSearch}
-			/>
-		</Container>
+		<div>
+			<section className="bg-linear-to-b from-bn-surface to-bn-bg pb-8 pt-32 sm:pt-40">
+				<Container>
+					<SectionHeader eyebrow="The league" title="Teams" />
+					<p className="-mt-6 max-w-lg text-sm text-bn-muted">
+						Browse every club, follow the ones you love, and never miss a
+						moment.
+					</p>
+				</Container>
+			</section>
+
+			<Container className="py-12">
+				<p className="mb-4 text-xs text-bn-muted">{teamTotal} teams found</p>
+				<TeamsGrid
+					teams={teams}
+					teamSearch={teamSearch}
+					setTeamSearch={setTeamSearch}
+				/>
+			</Container>
+		</div>
 	);
 }
