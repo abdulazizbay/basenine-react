@@ -1,6 +1,12 @@
 import axios from 'axios';
 import { serverApi } from '../../lib/config';
-import type { LoginInput, Member, MemberInput } from '../../lib/types/member';
+import type {
+	LoginInput,
+	Member,
+	MemberInput,
+	MemberUpdateInput,
+} from '../../lib/types/member';
+import type { Favourite } from '../../lib/types/favourite';
 
 class MemberService {
 	private readonly path: string;
@@ -41,12 +47,36 @@ class MemberService {
 			throw err;
 		}
 	}
-		public async getMemberDetail(): Promise<Member> {
+	public async getMemberDetail(): Promise<Member & { favourites: Favourite[] }> {
 		try {
 			const url = this.path + '/member/detail';
 			const result = await axios.get(url, { withCredentials: true });
 
 			return result.data;
+		} catch (err) {
+			throw err;
+		}
+	}
+
+	public async updateMember(input: MemberUpdateInput): Promise<Member> {
+		try {
+			const url = this.path + '/member/update';
+			const formData = new FormData();
+			if (input.memberNick !== undefined)
+				formData.append('memberNick', input.memberNick);
+			if (input.memberPhone !== undefined)
+				formData.append('memberPhone', input.memberPhone);
+			if (input.memberDesc !== undefined)
+				formData.append('memberDesc', input.memberDesc);
+			if (input.memberAddress !== undefined)
+				formData.append('memberAddress', input.memberAddress);
+			if (input.memberImage instanceof File)
+				formData.append('memberImage', input.memberImage);
+
+			const result = await axios.post(url, formData, { withCredentials: true });
+			const member: Member = result.data;
+			localStorage.setItem('memberData', JSON.stringify(member));
+			return member;
 		} catch (err) {
 			throw err;
 		}
