@@ -25,7 +25,7 @@ export default function ProductCard({ product }: ProductCardProps) {
 					<p className="text-[11px] uppercase tracking-wide text-bn-muted">
 						{product.productCollection}
 					</p>
-					<p className="mt-1 font-display text-base font-semibold text-bn-white">
+					<p className="mt-1 line-clamp-2 min-h-[3rem] font-display text-base font-semibold text-bn-white">
 						{product.productName}
 					</p>
 					<div className="mt-3 flex items-center justify-between">
