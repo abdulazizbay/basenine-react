@@ -69,7 +69,7 @@ export default function HomeNavbar() {
 								</span>
 							)}
 						</button>
-						{basketOpen && <Basket onClose={() => setBasketOpen(false)} />}
+						{basketOpen && <Basket />}
 					</div>
 
 					{authMember ? (
