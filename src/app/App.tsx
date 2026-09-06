@@ -20,7 +20,7 @@ function App() {
 			<main className="flex-1">
 				<Routes>
 					<Route path="/" element={<HomePage />} />
-					<Route path="/games" element={<GamesPage />} />
+					<Route path="/games/*" element={<GamesPage />} />
 					<Route path="/orders" element={<OrdersPage />} />
 					<Route path="/players" element={<PlayersPage />} />
 					<Route path="/products/*" element={<ProductsPage />} />
