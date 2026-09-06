@@ -1,5 +1,6 @@
 import Container from '../../components/ui/Container';
 import SectionHeader from '../../components/ui/SectionHeader';
+import Pagination from '../../components/ui/Pagination';
 import PlayersGrid from './PlayersGrid';
 import { useEffect, useState } from 'react';
 import PlayerService from '../../services/PlayerService';
@@ -28,6 +29,13 @@ export default function Players() {
 			.catch((err) => console.log(err));
 	}, [playerSearch]);
 
+	const handlePageChange = (page: number) => {
+		setPlayerSearch((prev) => ({ ...prev, page }));
+		window.scrollTo({ top: 0, behavior: 'smooth' });
+	};
+
+	const pageCount = Math.max(1, Math.ceil(playerTotal / playerSearch.limit));
+
 	return (
 		<div>
 			<section className="bg-linear-to-b from-bn-surface to-bn-bg pb-8 pt-32 sm:pt-40">
@@ -49,6 +57,13 @@ export default function Players() {
 					playerSearch={playerSearch}
 					setPlayerSearch={setPlayerSearch}
 				/>
+				{playerTotal > playerSearch.limit && (
+					<Pagination
+						page={playerSearch.page}
+						count={pageCount}
+						onChange={handlePageChange}
+					/>
+				)}
 			</Container>
 		</div>
 	);

@@ -1,5 +1,6 @@
 import Container from "../../components/ui/Container";
 import SectionHeader from "../../components/ui/SectionHeader";
+import Pagination from "../../components/ui/Pagination";
 import GamesGrid from "./GamesGrid";
 import { useEffect, useState } from "react";
 import GameService from "../../services/GameService";
@@ -24,6 +25,13 @@ export default function Games() {
 			.catch((err) => console.log(err));
 	}, [gameSearch]);
 
+	const handlePageChange = (page: number) => {
+		setGameSearch((prev) => ({ ...prev, page }));
+		window.scrollTo({ top: 0, behavior: "smooth" });
+	};
+
+	const pageCount = Math.max(1, Math.ceil(gameTotal / gameSearch.limit));
+
 	return (
 		<div>
 			<section className="bg-linear-to-b from-bn-surface to-bn-bg pb-8 pt-32 sm:pt-40">
@@ -42,6 +50,13 @@ export default function Games() {
 					gameSearch={gameSearch}
 					setGameSearch={setGameSearch}
 				/>
+				{gameTotal > gameSearch.limit && (
+					<Pagination
+						page={gameSearch.page}
+						count={pageCount}
+						onChange={handlePageChange}
+					/>
+				)}
 			</Container>
 		</div>
 	);

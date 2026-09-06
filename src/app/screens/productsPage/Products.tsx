@@ -1,5 +1,6 @@
 import Container from "../../components/ui/Container";
 import SectionHeader from "../../components/ui/SectionHeader";
+import Pagination from "../../components/ui/Pagination";
 import ProductsGrid from "./ProductsGrid";
 import { useEffect, useState } from "react";
 import ProductService from "../../services/ProductService";
@@ -28,6 +29,13 @@ export default function Products() {
 			.catch((err) => console.log(err));
 	}, [productSearch]);
 
+	const handlePageChange = (page: number) => {
+		setProductSearch((prev) => ({ ...prev, page }));
+		window.scrollTo({ top: 0, behavior: "smooth" });
+	};
+
+	const pageCount = Math.max(1, Math.ceil(productTotal / productSearch.limit));
+
 	return (
 		<div>
 			<section className="bg-linear-to-b from-bn-surface to-bn-bg pb-8 pt-32 sm:pt-40">
@@ -49,6 +57,13 @@ export default function Products() {
 					productSearch={productSearch}
 					setProductSearch={setProductSearch}
 				/>
+				{productTotal > productSearch.limit && (
+					<Pagination
+						page={productSearch.page}
+						count={pageCount}
+						onChange={handlePageChange}
+					/>
+				)}
 			</Container>
 		</div>
 	);
