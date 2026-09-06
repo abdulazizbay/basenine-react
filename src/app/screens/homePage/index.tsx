@@ -1,4 +1,5 @@
 import Hero from './Hero';
+import BigGame from './BigGame';
 import FeaturedTeams from './FeaturedTeams';
 import FeaturedPlayers from './FeaturedPlayers';
 import FeaturedProducts from './FeaturedProducts';
@@ -13,11 +14,15 @@ import type { Player } from '../../../lib/types/player';
 import ProductService from '../../services/ProductService';
 import { ProductOrder } from '../../../lib/enums/product.enum';
 import type { Product } from '../../../lib/types/product';
+import GameService from '../../services/GameService';
+import { GameStatus } from '../../../lib/enums/game.enum';
+import type { Game } from '../../../lib/types/game';
 
 export default function HomePage() {
 	const [featuredTeams, setFeaturedTeams] = useState<Team[]>([]);
 	const [featuredPlayers, setFeaturedPlayers] = useState<Player[]>([]);
 	const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
+	const [bigGame, setBigGame] = useState<Game | null>(null);
 	useEffect(() => {
 		// team fetch
 		const teamService = new TeamService();
@@ -54,11 +59,19 @@ export default function HomePage() {
 			})
 			.then((data) => setFeaturedProducts(data.list))
 			.catch((err) => console.log(err));
+
+		// big game fetch
+		const gameService = new GameService();
+		gameService
+			.getGames({ page: 1, limit: 1, gameStatus: GameStatus.UPCOMING })
+			.then((data) => setBigGame(data.list[0] ?? null))
+			.catch((err) => console.log(err));
 	}, []);
 
 	return (
 		<div>
 			<Hero />
+			<BigGame game={bigGame} />
 			<FeaturedTeams teams={featuredTeams} />
 			<FeaturedPlayers players={featuredPlayers} />
 			<FeaturedProducts products={featuredProducts} />
