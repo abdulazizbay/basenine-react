@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { Route, Routes, useLocation } from 'react-router-dom';
 import HomePage from './screens/homePage';
 import GamesPage from './screens/gamesPage';
@@ -14,6 +15,11 @@ import AuthModal from './components/auth';
 
 function App() {
 	const location = useLocation();
+
+	useEffect(() => {
+		window.scrollTo(0, 0);
+	}, [location.pathname]);
+
 	return (
 		<div className="flex min-h-screen flex-col bg-bn-bg">
 			{location.pathname === '/' ? <HomeNavbar /> : <OtherNavbar />}
