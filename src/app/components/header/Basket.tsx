@@ -4,6 +4,7 @@ import ImageWithFallback from '../ui/ImageWithFallback';
 import { useCart } from '../../hooks/useCart';
 import { useNavigate } from 'react-router-dom';
 import OrderService from '../../services/OrderService';
+import { serverApi } from '../../../lib/config';
 
 interface BasketProps {
 	onClose: () => void;
@@ -49,7 +50,7 @@ export default function Basket({ onClose }: BasketProps) {
 				{cartItems.map((item) => (
 					<div key={item._id} className="flex items-center gap-3">
 						<ImageWithFallback
-							src={item.name}
+							src={`${serverApi}/${item.image}`}
 							alt={item.name}
 							className="h-14 w-14 shrink-0 rounded-lg"
 						/>

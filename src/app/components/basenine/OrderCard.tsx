@@ -2,6 +2,7 @@ import type { ReactNode } from 'react';
 import type { Order, OrderItem } from '../../../lib/types/order';
 import type { Product } from '../../../lib/types/product';
 import { OrderStatus } from '../../../lib/enums/order.enum';
+import { serverApi } from '../../../lib/config';
 import Card from '../ui/Card';
 import ImageWithFallback from '../ui/ImageWithFallback';
 
@@ -51,7 +52,11 @@ export default function OrderCard({
 					return (
 						<div key={item._id} className="flex items-center gap-3">
 							<ImageWithFallback
-								src={product?.productImages[0]}
+								src={
+									product
+										? `${serverApi}/${product.productImages[0]}`
+										: undefined
+								}
 								alt={product?.productName ?? 'Product'}
 								className="h-12 w-12 shrink-0 rounded-lg"
 							/>

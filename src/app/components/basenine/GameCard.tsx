@@ -1,5 +1,6 @@
 import type { Game } from "../../../lib/types/game";
 import type { Team } from "../../../lib/types/team";
+import { serverApi } from "../../../lib/config";
 import Card from "../ui/Card";
 import ImageWithFallback from "../ui/ImageWithFallback";
 
@@ -22,7 +23,7 @@ export default function GameCard({ game }: GameCardProps) {
 			<div className="mt-3 flex items-center justify-between gap-4">
 				<div className="flex flex-1 items-center gap-2">
 					<ImageWithFallback
-						src={teamA?.teamImage[0]}
+						src={teamA ? `${serverApi}/${teamA.teamImage[0]}` : undefined}
 						alt={teamA?.teamNick ?? "Team A"}
 						className="h-10 w-10 shrink-0 rounded-full"
 					/>
@@ -36,7 +37,7 @@ export default function GameCard({ game }: GameCardProps) {
 						{teamB?.teamNick ?? "TBD"}
 					</span>
 					<ImageWithFallback
-						src={teamB?.teamImage[0]}
+						src={teamB ? `${serverApi}/${teamB.teamImage[0]}` : undefined}
 						alt={teamB?.teamNick ?? "Team B"}
 						className="h-10 w-10 shrink-0 rounded-full"
 					/>

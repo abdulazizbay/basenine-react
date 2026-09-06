@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import type { Product } from '../../../lib/types/product';
 import { useCart } from '../../hooks/useCart';
+import { serverApi } from '../../../lib/config';
 import Card from '../ui/Card';
 import ImageWithFallback from '../ui/ImageWithFallback';
 
@@ -16,7 +17,7 @@ export default function ProductCard({ product }: ProductCardProps) {
 		<Link to={`/products/${product._id}`}>
 			<Card className="overflow-hidden">
 				<ImageWithFallback
-					src={product.productImages[0]}
+					src={`${serverApi}/${product.productImages[0]}`}
 					alt={product.productName}
 					className="h-40 w-full"
 				/>

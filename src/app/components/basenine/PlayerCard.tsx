@@ -1,4 +1,5 @@
 import type { Player } from "../../../lib/types/player";
+import { serverApi } from "../../../lib/config";
 import Card from "../ui/Card";
 import ImageWithFallback from "../ui/ImageWithFallback";
 
@@ -10,7 +11,7 @@ export default function PlayerCard({ player }: PlayerCardProps) {
   return (
     <Card className="overflow-hidden">
       <ImageWithFallback
-        src={player.playerImages[0]}
+        src={`${serverApi}/${player.playerImages[0]}`}
         alt={player.playerNick}
         className="h-40 w-full"
       />

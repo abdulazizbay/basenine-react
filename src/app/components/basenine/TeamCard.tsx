@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import type { Team } from '../../../lib/types/team';
+import { serverApi } from '../../../lib/config';
 import Card from '../ui/Card';
 import ImageWithFallback from '../ui/ImageWithFallback';
 
@@ -12,7 +13,7 @@ export default function TeamCard({ team }: TeamCardProps) {
 		<Link to={`/teams/${team._id}`}>
 			<Card className="overflow-hidden">
 				<ImageWithFallback
-					src={team.teamImage[0]}
+					src={`${serverApi}/${team.teamImage[0]}`}
 					alt={team.teamNick}
 					className="h-40 w-full"
 				/>
