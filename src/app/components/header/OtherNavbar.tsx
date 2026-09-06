@@ -27,6 +27,8 @@ export default function OtherNavbar() {
 	const [menuOpen, setMenuOpen] = useState(false);
 	const basketRef = useRef<HTMLDivElement>(null);
 	useClickOutside(basketRef, () => setBasketOpen(false), basketOpen);
+	const menuRef = useRef<HTMLDivElement>(null);
+	useClickOutside(menuRef, () => setMenuOpen(false), menuOpen);
 
 	const handleLogout = async () => {
 		await memberService.logout();
@@ -73,7 +75,7 @@ export default function OtherNavbar() {
 					</div>
 
 					{authMember ? (
-						<div className="relative">
+						<div className="relative" ref={menuRef}>
 							<button
 								onClick={() => setMenuOpen((v) => !v)}
 								aria-label="Account"
@@ -91,9 +93,6 @@ export default function OtherNavbar() {
 							</button>
 							{menuOpen && (
 								<Card className="absolute right-0 top-full z-30 mt-2 w-44 overflow-hidden p-1.5">
-									<p className="truncate px-3 py-2 text-xs font-medium text-bn-muted">
-										{authMember.memberNick}
-									</p>
 									<button
 										onClick={() => {
 											setMenuOpen(false);
