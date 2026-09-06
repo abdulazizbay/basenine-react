@@ -54,19 +54,27 @@ export default function TeamDetail() {
 			try {
 				const teamService = new TeamService();
 				const team = await teamService.getTeam(teamId);
-				const teamSubcribers = await teamService.getTeamSubscribers(
-					teamId,
-					1,
-					10,
-				);
-
 				setChosenTeam(team);
-				setChosenTeamSubscribers(teamSubcribers);
 			} catch (err) {
 				console.log(err);
 			}
 		};
 		fetchGetTeam();
+
+		const fetchGetSubscribers = async () => {
+			try {
+				const teamService = new TeamService();
+				const teamSubcribers = await teamService.getTeamSubscribers(
+					teamId,
+					1,
+					10,
+				);
+				setChosenTeamSubscribers(teamSubcribers);
+			} catch (err) {
+				console.log(err);
+			}
+		};
+		fetchGetSubscribers();
 		const fetchGetPlayers = async () => {
 			try {
 				const playerService = new PlayerService();
