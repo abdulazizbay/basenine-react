@@ -30,7 +30,7 @@ export default function HomeNavbar() {
 					basenine
 				</span>
 				<nav className="flex items-center gap-6">
-					{NAV_LINKS.map((link) => (
+					{NAV_LINKS.filter((link) => !link.authOnly || authMember).map((link) => (
 						<NavLink
 							key={link.to}
 							to={link.to}

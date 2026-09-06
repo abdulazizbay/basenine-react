@@ -3,9 +3,11 @@ import SectionHeader from '../../components/ui/SectionHeader';
 import EmptyState from '../../components/ui/EmptyState';
 import OrderCard from '../../components/basenine/OrderCard';
 import { useEffect, useState } from 'react';
+import { Navigate } from 'react-router-dom';
 import OrderService from '../../services/OrderService';
 import type { Orders } from '../../../lib/types/order';
 import { OrderStatus } from '../../../lib/enums/order.enum';
+import { useAuth } from '../../hooks/useAuth';
 
 const TABS: { label: string; status: OrderStatus }[] = [
 	{ label: 'Pending', status: OrderStatus.PAUSE },
@@ -14,12 +16,14 @@ const TABS: { label: string; status: OrderStatus }[] = [
 ];
 
 export default function OrdersPage() {
+	const { authMember } = useAuth();
 	const [orders, setOrders] = useState<Orders | null>(null);
 	const [activeStatus, setActiveStatus] = useState<OrderStatus>(
 		OrderStatus.PAUSE,
 	);
 
 	useEffect(() => {
+		if (!authMember) return;
 		const fetchOrders = async () => {
 			try {
 				const orderService = new OrderService();
@@ -34,7 +38,9 @@ export default function OrdersPage() {
 			}
 		};
 		fetchOrders();
-	}, [activeStatus]);
+	}, [activeStatus, authMember]);
+
+	if (!authMember) return <Navigate to="/" replace />;
 
 	const handleStatusChange = async (orderId: string, status: OrderStatus) => {
 		try {
