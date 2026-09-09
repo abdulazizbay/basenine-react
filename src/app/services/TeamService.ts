@@ -74,6 +74,16 @@ class TeamService {
 			throw err;
 		}
 	}
+	public async getFavouriteTeams(inquiry: OrdinaryInquiry): Promise<Teams> {
+		try {
+			const { page, limit } = inquiry;
+			const url = `${this.path}/team/favourites?page=${page}&limit=${limit}`;
+			const result = await axios.get(url, { withCredentials: true });
+			return result.data;
+		} catch (err) {
+			throw err;
+		}
+	}
 }
 
 export default TeamService;

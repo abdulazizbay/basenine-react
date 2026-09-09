@@ -6,7 +6,6 @@ import type {
 	MemberInput,
 	MemberUpdateInput,
 } from '../../lib/types/member';
-import type { Favourite } from '../../lib/types/favourite';
 
 class MemberService {
 	private readonly path: string;
@@ -47,7 +46,7 @@ class MemberService {
 			throw err;
 		}
 	}
-	public async getMemberDetail(): Promise<Member & { favourites: Favourite[] }> {
+	public async getMemberDetail(): Promise<Member> {
 		try {
 			const url = this.path + '/member/detail';
 			const result = await axios.get(url, { withCredentials: true });
