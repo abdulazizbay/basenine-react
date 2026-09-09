@@ -4,17 +4,30 @@ import Pagination from "../../components/ui/Pagination";
 import GamesGrid from "./GamesGrid";
 import { useEffect, useState } from "react";
 import GameService from "../../services/GameService";
+import TeamService from "../../services/TeamService";
 import type { Game, GameInquiry } from "../../../lib/types/game";
+import type { TeamOption } from "../../../lib/types/team";
 import { toast } from 'sonner';
 import { getErrorMessage } from '../../../lib/utils/error';
 
 export default function Games() {
 	const [games, setGames] = useState<Game[]>([]);
 	const [gameTotal, setGameTotal] = useState<number>(0);
+	const [teamOptions, setTeamOptions] = useState<TeamOption[]>([]);
 	const [gameSearch, setGameSearch] = useState<GameInquiry>({
 		limit: 8,
 		page: 1,
 	});
+
+	useEffect(() => {
+		const teamService = new TeamService();
+		teamService
+			.getTeamOptions()
+			.then((data) => setTeamOptions(data))
+			.catch((err) =>
+				toast.error(getErrorMessage(err, "Could not load the team filter.")),
+			);
+	}, []);
 
 	useEffect(() => {
 		const gameService = new GameService();
@@ -51,6 +64,7 @@ export default function Games() {
 					games={games}
 					gameSearch={gameSearch}
 					setGameSearch={setGameSearch}
+					teamOptions={teamOptions}
 				/>
 				{gameTotal > gameSearch.limit && (
 					<Pagination

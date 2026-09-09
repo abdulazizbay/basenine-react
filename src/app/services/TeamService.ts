@@ -1,6 +1,11 @@
 import axios from 'axios';
 import { serverApi } from '../../lib/config';
-import type { Team, TeamInquiry, Teams } from '../../lib/types/team';
+import type {
+	Team,
+	TeamInquiry,
+	TeamOption,
+	Teams,
+} from '../../lib/types/team';
 import type {
 	TeamSubscriber,
 	TeamSubscribers,
@@ -19,6 +24,15 @@ class TeamService {
 
 			const result = await axios.get(url);
 			return result.data.result;
+		} catch (err) {
+			throw err;
+		}
+	}
+	public async getTeamOptions(): Promise<TeamOption[]> {
+		try {
+			const url = `${this.path}/team/options`;
+			const result = await axios.get(url);
+			return result.data;
 		} catch (err) {
 			throw err;
 		}

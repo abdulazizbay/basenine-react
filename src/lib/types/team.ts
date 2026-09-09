@@ -14,6 +14,8 @@ export interface Team {
 	updatedAt: Date;
 }
 
+export type TeamOption = Pick<Team, '_id' | 'teamNick'>;
+
 export interface Teams {
 	list: Team[];
 	metaCounter: { total: number }[];
