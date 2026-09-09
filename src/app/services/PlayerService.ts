@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { serverApi } from '../../lib/config';
 import type { Player, PlayerInquiry, Players } from '../../lib/types/player';
+import type { OrdinaryInquiry } from '../../lib/types/common';
 
 class PlayerService {
 	private readonly path: string;
@@ -28,6 +29,16 @@ class PlayerService {
 			throw err;
 		}
 	}
+	public async getVisitedPlayers(inquiry: OrdinaryInquiry): Promise<Players> {
+		try {
+			const { page, limit } = inquiry;
+			const url = `${this.path}/player/visited?page=${page}&limit=${limit}`;
+			const result = await axios.get(url, { withCredentials: true });
+			return result.data;
+		} catch (err) {
+			throw err;
+		}
+	}
 }
 
-export default PlayerService
+export default PlayerService;

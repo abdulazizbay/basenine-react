@@ -5,6 +5,7 @@ import type {
 	ProductInquiry,
 	Products,
 } from '../../lib/types/product';
+import type { OrdinaryInquiry } from '../../lib/types/common';
 
 class ProductService {
 	private readonly path: string;
@@ -36,7 +37,16 @@ class ProductService {
 			throw err;
 		}
 	}
-	
+	public async getVisitedProducts(inquiry: OrdinaryInquiry): Promise<Products> {
+		try {
+			const { page, limit } = inquiry;
+			const url = `${this.path}/product/visited?page=${page}&limit=${limit}`;
+			const result = await axios.get(url, { withCredentials: true });
+			return result.data;
+		} catch (err) {
+			throw err;
+		}
+	}
 }
 
 export default ProductService;

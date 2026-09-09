@@ -5,6 +5,7 @@ import type {
 	TeamSubscriber,
 	TeamSubscribers,
 } from '../../lib/types/favourite';
+import type { OrdinaryInquiry } from '../../lib/types/common';
 
 class TeamService {
 	private readonly path: string;
@@ -59,6 +60,16 @@ class TeamService {
 			const url = `${this.path}/team/${teamId}/unsubscribe`;
 			const result = await axios.get(url, { withCredentials: true });
 			return result.data.data;
+		} catch (err) {
+			throw err;
+		}
+	}
+	public async getVisitedTeams(inquiry: OrdinaryInquiry): Promise<Teams> {
+		try {
+			const { page, limit } = inquiry;
+			const url = `${this.path}/team/visited?page=${page}&limit=${limit}`;
+			const result = await axios.get(url, { withCredentials: true });
+			return result.data;
 		} catch (err) {
 			throw err;
 		}
