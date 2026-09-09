@@ -4,6 +4,7 @@ import GameService from '../../services/GameService';
 import type { Game } from '../../../lib/types/game';
 import { GameStatus } from '../../../lib/enums/game.enum';
 import { teamOf } from '../../../lib/utils/relations';
+import { getGameScore } from '../../../lib/utils/game';
 import { serverApi } from '../../../lib/config';
 import Container from '../../components/ui/Container';
 import SectionHeader from '../../components/ui/SectionHeader';
@@ -11,6 +12,7 @@ import Card from '../../components/ui/Card';
 import ImageWithFallback from '../../components/ui/ImageWithFallback';
 import { toast } from 'sonner';
 import { getErrorMessage } from '../../../lib/utils/error';
+import { BASEBALL_BASICS, GAMEDAY_STEPS } from '../../../lib/data/gameData';
 
 const STATUS_LABEL: Record<GameStatus, string> = {
 	[GameStatus.UPCOMING]: 'Upcoming',
@@ -20,50 +22,10 @@ const STATUS_LABEL: Record<GameStatus, string> = {
 
 const STATUS_BADGE_CLASS: Record<GameStatus, string> = {
 	[GameStatus.UPCOMING]: 'border border-bn-border text-bn-muted',
-	[GameStatus.PROCESS]: 'bg-bn-red text-white shadow-[0_0_25px_rgba(229,72,77,0.4)]',
+	[GameStatus.PROCESS]:
+		'bg-bn-red text-white shadow-[0_0_25px_rgba(229,72,77,0.4)]',
 	[GameStatus.FINISHED]: 'bg-bn-surface-2 text-bn-muted',
 };
-
-const GAMEDAY_STEPS = [
-	{
-		number: '01',
-		title: 'Arrive at the Stadium',
-		desc: 'Fans arrive early, find their seats, and soak in the pregame atmosphere.',
-	},
-	{
-		number: '02',
-		title: 'First Pitch',
-		desc: 'The starting pitcher throws the opening pitch and the game begins.',
-	},
-	{
-		number: '03',
-		title: 'Nine Innings',
-		desc: 'Both teams take turns batting and fielding across nine innings.',
-	},
-	{
-		number: '04',
-		title: 'Winner Determined',
-		desc: 'The team with the most runs after the final out takes the win.',
-	},
-];
-
-const BASEBALL_BASICS = [
-	{
-		value: '9',
-		label: 'Innings',
-		desc: 'A standard game is played over nine innings, each split into a top and bottom half.',
-	},
-	{
-		value: '3',
-		label: 'Outs',
-		desc: 'Each half-inning ends once the fielding team records three outs.',
-	},
-	{
-		value: 'Extra',
-		label: 'Innings',
-		desc: 'If the score is tied after nine innings, the game continues into extra innings.',
-	},
-];
 
 export default function GameDetail() {
 	const { gameId } = useParams<{ gameId: string }>();
@@ -88,8 +50,11 @@ export default function GameDetail() {
 	const teamA = teamOf(chosenGame.teamAId);
 	const teamB = teamOf(chosenGame.teamBId);
 	const gameDate = new Date(chosenGame.gameDate);
-	const statusLabel = STATUS_LABEL[chosenGame.gameStatus] ?? chosenGame.gameStatus;
-
+	const statusLabel =
+		STATUS_LABEL[chosenGame.gameStatus] ?? chosenGame.gameStatus;
+	const score = getGameScore(chosenGame);
+	const scoreTone = (self: number, other: number) =>
+		self >= other ? 'text-bn-white' : 'text-bn-muted';
 	return (
 		<div>
 			<section className="relative overflow-hidden border-b border-bn-border bg-bn-surface pb-20 pt-32 sm:pt-40">
@@ -125,11 +90,29 @@ export default function GameDetail() {
 							</span>
 						</Link>
 
-						<div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-bn-red shadow-[0_0_0_8px_rgba(229,72,77,0.08),0_15px_35px_rgba(229,72,77,0.4)] sm:h-16 sm:w-16">
-							<span className="font-display text-xs font-extrabold tracking-wide text-white sm:text-sm">
-								VS
-							</span>
-						</div>
+						{score ? (
+							<div className="flex shrink-0 items-baseline gap-3 rounded-2xl border border-bn-border bg-bn-surface-2 px-5 py-3 sm:gap-4 sm:px-7 sm:py-4">
+								<span
+									className={`font-display text-3xl font-extrabold sm:text-5xl ${scoreTone(score.a, score.b)}`}
+								>
+									{score.a}
+								</span>
+								<span className="font-display text-lg font-bold text-bn-muted sm:text-2xl">
+									&ndash;
+								</span>
+								<span
+									className={`font-display text-3xl font-extrabold sm:text-5xl ${scoreTone(score.b, score.a)}`}
+								>
+									{score.b}
+								</span>
+							</div>
+						) : (
+							<div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-bn-red shadow-[0_0_0_8px_rgba(229,72,77,0.08),0_15px_35px_rgba(229,72,77,0.4)] sm:h-16 sm:w-16">
+								<span className="font-display text-xs font-extrabold tracking-wide text-white sm:text-sm">
+									VS
+								</span>
+							</div>
+						)}
 
 						<Link
 							to={teamB ? `/teams/${teamB._id}` : '#'}

@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import type { Game } from "../../../lib/types/game";
 import { GameStatus } from "../../../lib/enums/game.enum";
 import { teamOf } from "../../../lib/utils/relations";
+import { getGameScore } from "../../../lib/utils/game";
 import { serverApi } from "../../../lib/config";
 import Card from "../ui/Card";
 import ImageWithFallback from "../ui/ImageWithFallback";
@@ -26,6 +27,9 @@ export default function GameCard({ game }: GameCardProps) {
 	const teamA = teamOf(game.teamAId);
 	const teamB = teamOf(game.teamBId);
 	const gameDate = new Date(game.gameDate);
+	const score = getGameScore(game);
+	const toneFor = (self: number, other: number) =>
+		self >= other ? "text-bn-white" : "text-bn-muted";
 
 	return (
 		<Link to={`/games/${game._id}`} className="group block">
@@ -50,9 +54,17 @@ export default function GameCard({ game }: GameCardProps) {
 							{teamA?.teamNick ?? "TBD"}
 						</span>
 					</div>
-					<span className="shrink-0 font-display text-xs font-extrabold text-bn-muted">
-						VS
-					</span>
+					{score ? (
+						<span className="flex shrink-0 items-baseline gap-1.5 font-display text-2xl font-extrabold">
+							<span className={toneFor(score.a, score.b)}>{score.a}</span>
+							<span className="text-sm font-bold text-bn-muted">&ndash;</span>
+							<span className={toneFor(score.b, score.a)}>{score.b}</span>
+						</span>
+					) : (
+						<span className="shrink-0 font-display text-xs font-extrabold text-bn-muted">
+							VS
+						</span>
+					)}
 					<div className="flex min-w-0 flex-1 flex-col items-center gap-2.5">
 						<ImageWithFallback
 							src={teamB ? `${serverApi}/${teamB.teamImage[0]}` : undefined}
