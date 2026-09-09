@@ -5,6 +5,8 @@ import type { T } from '../../../lib/types/common';
 import { serverApi } from '../../../lib/config';
 import MemberService from '../../services/MemberService';
 import { useAuth } from '../../hooks/useAuth';
+import { toast } from 'sonner';
+import { getErrorMessage } from '../../../lib/utils/error';
 import Button from '../../components/ui/Button';
 import ImageWithFallback from '../../components/ui/ImageWithFallback';
 
@@ -18,10 +20,6 @@ const inputClassName =
 
 export default function Settings({ memberDetail, onUpdated }: SettingsProps) {
 	const { setAuthMember } = useAuth();
-	const [feedback, setFeedback] = useState<{
-		type: 'success' | 'error';
-		text: string;
-	} | null>(null);
 	const [memberImagePreview, setMemberImagePreview] = useState<string | null>(
 		memberDetail.memberImage ? `${serverApi}/${memberDetail.memberImage}` : null,
 	);
@@ -41,10 +39,7 @@ export default function Settings({ memberDetail, onUpdated }: SettingsProps) {
 		if (!file) return;
 		const validTypes = ['image/jpg', 'image/png', 'image/jpeg'];
 		if (!validTypes.includes(file.type)) {
-			setFeedback({
-				type: 'error',
-				text: 'Only JPG, JPEG, or PNG images are allowed.',
-			});
+			toast.error('Only JPG, JPEG, or PNG images are allowed.');
 			return;
 		}
 		setMemberUpdateInput((prev) => ({ ...prev, memberImage: file }));
@@ -61,13 +56,9 @@ export default function Settings({ memberDetail, onUpdated }: SettingsProps) {
 			const result = await memberService.updateMember(memberUpdateInput);
 			setAuthMember(result);
 			onUpdated(result);
-			setFeedback({ type: 'success', text: 'Profile updated.' });
+			toast.success('Profile updated.');
 		} catch (err) {
-			console.log(err);
-			setFeedback({
-				type: 'error',
-				text: err instanceof Error ? err.message : 'Could not update profile.',
-			});
+			toast.error(getErrorMessage(err, 'Could not update profile.'));
 		}
 	};
 
@@ -145,16 +136,6 @@ export default function Settings({ memberDetail, onUpdated }: SettingsProps) {
 					onChange={handleChange('memberDesc')}
 				/>
 			</div>
-
-			{feedback && (
-				<p
-					className={`text-xs font-medium ${
-						feedback.type === 'success' ? 'text-bn-white' : 'text-bn-red-light'
-					}`}
-				>
-					{feedback.text}
-				</p>
-			)}
 
 			<Button type="submit" className="self-start">
 				Save changes

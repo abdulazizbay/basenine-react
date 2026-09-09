@@ -9,6 +9,8 @@ import Container from '../../components/ui/Container';
 import Card from '../../components/ui/Card';
 import Button from '../../components/ui/Button';
 import ImageWithFallback from '../../components/ui/ImageWithFallback';
+import { toast } from 'sonner';
+import { getErrorMessage } from '../../../lib/utils/error';
 
 export const ProductDetail = () => {
 	const { productId } = useParams<{ productId: string }>();
@@ -24,7 +26,7 @@ export const ProductDetail = () => {
 		productService
 			.getProduct(productId)
 			.then((result) => setChosenProduct(result))
-			.catch((err) => console.log(err));
+			.catch((err) => toast.error(getErrorMessage(err, 'Could not load this product.')));
 	}, [productId]);
 	const chosenProductTeam = chosenProduct ? teamOf(chosenProduct.teamId) : null;
 	if (!chosenProduct) return null;

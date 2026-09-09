@@ -9,6 +9,8 @@ import Container from '../../components/ui/Container';
 import SectionHeader from '../../components/ui/SectionHeader';
 import Card from '../../components/ui/Card';
 import ImageWithFallback from '../../components/ui/ImageWithFallback';
+import { toast } from 'sonner';
+import { getErrorMessage } from '../../../lib/utils/error';
 
 const STATUS_LABEL: Record<GameStatus, string> = {
 	[GameStatus.UPCOMING]: 'Upcoming',
@@ -75,7 +77,7 @@ export default function GameDetail() {
 				const result = await gameService.getGame(gameId);
 				setChosenGame(result);
 			} catch (err) {
-				console.log(err);
+				toast.error(getErrorMessage(err, 'Could not load this game.'));
 			}
 		};
 		fetchGetGame();

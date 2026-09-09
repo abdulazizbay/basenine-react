@@ -5,6 +5,8 @@ import TeamCard from '../../components/basenine/TeamCard';
 import EmptyState from '../../components/ui/EmptyState';
 import SectionHeader from '../../components/ui/SectionHeader';
 import Pagination from '../../components/ui/Pagination';
+import { toast } from 'sonner';
+import { getErrorMessage } from '../../../lib/utils/error';
 
 const LIMIT = 6;
 
@@ -21,7 +23,7 @@ export default function SubscribedTeams() {
 				setTeams(data.list);
 				setTotal(data.metaCounter[0]?.total ?? 0);
 			})
-			.catch((err) => console.log(err));
+			.catch((err) => toast.error(getErrorMessage(err, 'Could not load subscribed teams.')));
 	}, [page]);
 
 	const handlePageChange = (nextPage: number) => {

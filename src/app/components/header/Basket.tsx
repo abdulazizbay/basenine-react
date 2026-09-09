@@ -3,9 +3,11 @@ import Card from '../ui/Card';
 import ImageWithFallback from '../ui/ImageWithFallback';
 import CartIcon from './BasketIcon';
 import { useCart } from '../../hooks/useCart';
+import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
 import OrderService from '../../services/OrderService';
 import { serverApi } from '../../../lib/config';
+import { getErrorMessage } from '../../../lib/utils/error';
 
 export default function Basket() {
 	const { cartItems, onDelete, onDeleteAll, onRemove, onAdd } = useCart();
@@ -24,8 +26,9 @@ export default function Basket() {
 
 			onDeleteAll();
 			navigate('/orders');
+			toast.success('Order placed.');
 		} catch (err) {
-			console.log(err);
+			toast.error(getErrorMessage(err, 'Could not place your order.'));
 		}
 	};
 

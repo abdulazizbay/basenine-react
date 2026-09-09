@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useAuth } from '../../hooks/useAuth';
 import { useAuthModal } from '../../hooks/useAuthModal';
+import { toast } from 'sonner';
 import MemberService from '../../services/MemberService';
+import { getErrorMessage } from '../../../lib/utils/error';
 import Brand from '../ui/Brand';
 
 const inputClassName =
@@ -45,9 +47,19 @@ export default function AuthModal() {
 			if (member) {
 				setAuthMember(member);
 				close();
+				toast.success(
+					isSignup
+						? `Welcome to Basenine, ${member.memberNick}!`
+						: `Welcome back, ${member.memberNick}!`,
+				);
 			}
 		} catch (err) {
-			console.log(err);
+			toast.error(
+				getErrorMessage(
+					err,
+					isSignup ? 'Could not create your account.' : 'Could not sign you in.',
+				),
+			);
 		}
 	};
 

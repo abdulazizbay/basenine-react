@@ -7,6 +7,8 @@ import PlayerService from '../../services/PlayerService';
 import { PlayerOrder } from '../../../lib/enums/player.enum';
 import { Direction } from '../../../lib/types/common';
 import type { Player, PlayerInquiry } from '../../../lib/types/player';
+import { toast } from 'sonner';
+import { getErrorMessage } from '../../../lib/utils/error';
 
 export default function Players() {
 	const [players, setPlayers] = useState<Player[]>([]);
@@ -26,7 +28,7 @@ export default function Players() {
 				setPlayers(data.list);
 				setPlayerTotal(data.metaCounter[0]?.total ?? 0);
 			})
-			.catch((err) => console.log(err));
+			.catch((err) => toast.error(getErrorMessage(err, 'Could not load players.')));
 	}, [playerSearch]);
 
 	const handlePageChange = (page: number) => {

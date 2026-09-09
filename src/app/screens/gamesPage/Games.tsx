@@ -5,6 +5,8 @@ import GamesGrid from "./GamesGrid";
 import { useEffect, useState } from "react";
 import GameService from "../../services/GameService";
 import type { Game, GameInquiry } from "../../../lib/types/game";
+import { toast } from 'sonner';
+import { getErrorMessage } from '../../../lib/utils/error';
 
 export default function Games() {
 	const [games, setGames] = useState<Game[]>([]);
@@ -22,7 +24,7 @@ export default function Games() {
 				setGames(data.list);
 				setGameTotal(data.metaCounter[0]?.total ?? 0);
 			})
-			.catch((err) => console.log(err));
+			.catch((err) => toast.error(getErrorMessage(err, 'Could not load games.')));
 	}, [gameSearch]);
 
 	const handlePageChange = (page: number) => {

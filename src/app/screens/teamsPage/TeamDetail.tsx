@@ -21,8 +21,10 @@ import GameService from '../../services/GameService';
 import { GameStatus } from '../../../lib/enums/game.enum';
 import type { Game, Games } from '../../../lib/types/game';
 import { useAuthModal } from '../../hooks/useAuthModal';
+import { toast } from 'sonner';
 import { teamOf } from '../../../lib/utils/relations';
 import { serverApi } from '../../../lib/config';
+import { getErrorMessage } from '../../../lib/utils/error';
 
 const POSITION_LABEL: Record<string, string> = {
 	PITCHER: 'Pitcher',
@@ -56,7 +58,7 @@ export default function TeamDetail() {
 				const team = await teamService.getTeam(teamId);
 				setChosenTeam(team);
 			} catch (err) {
-				console.log(err);
+				toast.error(getErrorMessage(err, 'Could not load this team.'));
 			}
 		};
 		fetchGetTeam();
@@ -71,7 +73,7 @@ export default function TeamDetail() {
 				);
 				setChosenTeamSubscribers(teamSubcribers);
 			} catch (err) {
-				console.log(err);
+				toast.error(getErrorMessage(err, 'Could not load subscribers.'));
 			}
 		};
 		fetchGetSubscribers();
@@ -87,7 +89,7 @@ export default function TeamDetail() {
 				});
 				setchosenTeamPlayers(result);
 			} catch (err) {
-				console.log(err);
+				toast.error(getErrorMessage(err, 'Could not load the squad.'));
 			}
 		};
 		fetchGetPlayers();
@@ -102,9 +104,8 @@ export default function TeamDetail() {
 					teamId: teamId,
 				});
 				setChosenTeamGames(result);
-				console.log(result);
 			} catch (err) {
-				console.log(err);
+				toast.error(getErrorMessage(err, 'Could not load upcoming games.'));
 			}
 		};
 		fetchGetGames();
@@ -149,7 +150,14 @@ export default function TeamDetail() {
 			);
 			setChosenTeamSubscribers(teamSubcribers);
 		} catch (err) {
-			console.log(err);
+			toast.error(
+				getErrorMessage(
+					err,
+					chosenTeam?.meFavourited
+						? 'Could not unsubscribe from this team.'
+						: 'Could not subscribe to this team.',
+				),
+			);
 		}
 	};
 	if (!chosenTeam) return null;

@@ -9,6 +9,8 @@ import OrderService from '../../services/OrderService';
 import type { Orders } from '../../../lib/types/order';
 import { OrderStatus } from '../../../lib/enums/order.enum';
 import { useAuth } from '../../hooks/useAuth';
+import { toast } from 'sonner';
+import { getErrorMessage } from '../../../lib/utils/error';
 
 const TABS: { label: string; status: OrderStatus }[] = [
 	{ label: 'Pending', status: OrderStatus.PAUSE },
@@ -40,7 +42,7 @@ export default function OrdersPage() {
 				setOrders(result);
 				setOrderTotal(result.metaCounter[0]?.total ?? 0);
 			} catch (err) {
-				console.log(err);
+				toast.error(getErrorMessage(err, 'Could not load your orders.'));
 			}
 		};
 		fetchOrders();
@@ -66,7 +68,7 @@ export default function OrdersPage() {
 			await orderService.updateOrder({ orderId, orderStatus: status });
 			setActiveStatus(status);
 		} catch (err) {
-			console.log(err);
+			toast.error(getErrorMessage(err, 'Could not update this order.'));
 		}
 	};
 

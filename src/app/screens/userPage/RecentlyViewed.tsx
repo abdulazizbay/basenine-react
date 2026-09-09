@@ -11,6 +11,8 @@ import ProductCard from '../../components/basenine/ProductCard';
 import EmptyState from '../../components/ui/EmptyState';
 import SectionHeader from '../../components/ui/SectionHeader';
 import Pagination from '../../components/ui/Pagination';
+import { toast } from 'sonner';
+import { getErrorMessage } from '../../../lib/utils/error';
 
 type ViewedTab = 'teams' | 'players' | 'products';
 
@@ -46,7 +48,9 @@ export default function RecentlyViewed() {
 				setTeams(data.list);
 				setTeamsTotal(data.metaCounter[0]?.total ?? 0);
 			})
-			.catch((err) => console.log(err));
+			.catch((err) =>
+				toast.error(getErrorMessage(err, 'Could not load recently viewed teams.')),
+			);
 	}, [teamsPage]);
 
 	useEffect(() => {
@@ -57,7 +61,9 @@ export default function RecentlyViewed() {
 				setPlayers(data.list);
 				setPlayersTotal(data.metaCounter[0]?.total ?? 0);
 			})
-			.catch((err) => console.log(err));
+			.catch((err) =>
+				toast.error(getErrorMessage(err, 'Could not load recently viewed players.')),
+			);
 	}, [playersPage]);
 
 	useEffect(() => {
@@ -68,7 +74,9 @@ export default function RecentlyViewed() {
 				setProducts(data.list);
 				setProductsTotal(data.metaCounter[0]?.total ?? 0);
 			})
-			.catch((err) => console.log(err));
+			.catch((err) =>
+				toast.error(getErrorMessage(err, 'Could not load recently viewed products.')),
+			);
 	}, [productsPage]);
 
 	const counts: Record<ViewedTab, number> = {

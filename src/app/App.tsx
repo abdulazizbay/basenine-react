@@ -12,6 +12,7 @@ import OtherNavbar from './components/header/OtherNavbar';
 import NotFoundPage from './screens/notFoundPage';
 import Footer from './components/footer';
 import AuthModal from './components/auth';
+import { Toaster } from 'sonner';
 
 function App() {
 	const location = useLocation();
@@ -37,6 +38,7 @@ function App() {
 			</main>
 			<Footer />
 			<AuthModal />
+			<Toaster theme="dark" richColors position="bottom-right" />
 		</div>
 	);
 }

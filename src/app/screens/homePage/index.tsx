@@ -17,6 +17,8 @@ import type { Product } from '../../../lib/types/product';
 import GameService from '../../services/GameService';
 import { GameStatus } from '../../../lib/enums/game.enum';
 import type { Game } from '../../../lib/types/game';
+import { toast } from 'sonner';
+import { getErrorMessage } from '../../../lib/utils/error';
 
 export default function HomePage() {
 	const [featuredTeams, setFeaturedTeams] = useState<Team[]>([]);
@@ -34,7 +36,9 @@ export default function HomePage() {
 				page: 1,
 			})
 			.then((data) => setFeaturedTeams(data.list))
-			.catch((err) => console.log(err));
+			.catch((err) => toast.error(getErrorMessage(err, 'Could not load the homepage.'), {
+					id: 'home-load',
+				}));
 
 		// player fetch
 		const playerService = new PlayerService();
@@ -46,7 +50,9 @@ export default function HomePage() {
 				page: 1,
 			})
 			.then((data) => setFeaturedPlayers(data.list))
-			.catch((err) => console.log(err));
+			.catch((err) => toast.error(getErrorMessage(err, 'Could not load the homepage.'), {
+					id: 'home-load',
+				}));
 
 		// products fetch
 		const productService = new ProductService();
@@ -58,14 +64,18 @@ export default function HomePage() {
 				page: 1,
 			})
 			.then((data) => setFeaturedProducts(data.list))
-			.catch((err) => console.log(err));
+			.catch((err) => toast.error(getErrorMessage(err, 'Could not load the homepage.'), {
+					id: 'home-load',
+				}));
 
 		// big game fetch
 		const gameService = new GameService();
 		gameService
 			.getGames({ page: 1, limit: 1, gameStatus: GameStatus.UPCOMING })
 			.then((data) => setBigGame(data.list[0] ?? null))
-			.catch((err) => console.log(err));
+			.catch((err) => toast.error(getErrorMessage(err, 'Could not load the homepage.'), {
+					id: 'home-load',
+				}));
 	}, []);
 
 	return (

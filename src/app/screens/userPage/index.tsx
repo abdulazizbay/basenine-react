@@ -9,6 +9,8 @@ import Settings from './Settings';
 import RecentlyViewed from './RecentlyViewed';
 import SubscribedTeams from './SubscribedTeams';
 import ProfileSidebar, { type ProfileView } from './ProfileSidebar';
+import { toast } from 'sonner';
+import { getErrorMessage } from '../../../lib/utils/error';
 
 export default function UserPage() {
 	const { authMember, setAuthMember } = useAuth();
@@ -23,7 +25,7 @@ export default function UserPage() {
 				const member = await memberService.getMemberDetail();
 				setMemberDetail(member);
 			} catch (err) {
-				console.log(err);
+				toast.error(getErrorMessage(err, 'Could not load your profile.'));
 			}
 		};
 		fetchMemberDetail();

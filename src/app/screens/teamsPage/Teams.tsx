@@ -7,6 +7,8 @@ import TeamService from '../../services/TeamService';
 import { TeamOrder } from '../../../lib/enums/team.enum';
 import { Direction } from '../../../lib/types/common';
 import type { Team, TeamInquiry } from '../../../lib/types/team';
+import { toast } from 'sonner';
+import { getErrorMessage } from '../../../lib/utils/error';
 
 export default function Teams() {
 	const [teams, setTeams] = useState<Team[]>([]);
@@ -27,7 +29,7 @@ export default function Teams() {
 					setTeamTotal(data.metaCounter[0]?.total ?? 0)
 				),
 			)
-			.catch((err) => console.log(err));
+			.catch((err) => toast.error(getErrorMessage(err, 'Could not load teams.')));
 	}, [teamSearch]);
 
 	const handlePageChange = (page: number) => {

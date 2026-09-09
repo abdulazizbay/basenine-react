@@ -10,6 +10,8 @@ import SectionHeader from '../../components/ui/SectionHeader';
 import Card from '../../components/ui/Card';
 import ImageWithFallback from '../../components/ui/ImageWithFallback';
 import PositionDiagram from './PositionDiagram';
+import { toast } from 'sonner';
+import { getErrorMessage } from '../../../lib/utils/error';
 
 export default function PlayerDetail() {
 	const { playerId } = useParams<{ playerId: string }>();
@@ -23,7 +25,7 @@ export default function PlayerDetail() {
 				const result = await playerService.getPlayer(playerId);
 				setChosenPlayer(result);
 			} catch (err) {
-				console.log(err);
+				toast.error(getErrorMessage(err, 'Could not load this player.'));
 			}
 		};
 		fetchGetPlayer();

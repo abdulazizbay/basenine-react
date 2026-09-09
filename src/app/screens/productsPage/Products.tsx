@@ -7,6 +7,8 @@ import ProductService from "../../services/ProductService";
 import { ProductOrder } from "../../../lib/enums/product.enum";
 import { Direction } from "../../../lib/types/common";
 import type { Product, ProductInquiry } from "../../../lib/types/product";
+import { toast } from 'sonner';
+import { getErrorMessage } from '../../../lib/utils/error';
 
 export default function Products() {
 	const [products, setProducts] = useState<Product[]>([]);
@@ -26,7 +28,7 @@ export default function Products() {
 				setProducts(data.list);
 				setProductTotal(data.metaCounter[0]?.total ?? 0);
 			})
-			.catch((err) => console.log(err));
+			.catch((err) => toast.error(getErrorMessage(err, 'Could not load products.')));
 	}, [productSearch]);
 
 	const handlePageChange = (page: number) => {
