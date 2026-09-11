@@ -22,21 +22,11 @@ import { GameStatus } from '../../../lib/enums/game.enum';
 import type { Game, Games } from '../../../lib/types/game';
 import { useAuthModal } from '../../hooks/useAuthModal';
 import { toast } from 'sonner';
-import { teamOf } from '../../../lib/utils/relations';
 import { serverApi } from '../../../lib/config';
 import { getErrorMessage } from '../../../lib/utils/error';
+import { POSITION_LABEL } from '../../../lib/data/playerData';
+import TeamGameRow from '../../components/basenine/TeamGameRow';
 
-const POSITION_LABEL: Record<string, string> = {
-	PITCHER: 'Pitcher',
-	CATCHER: 'Catcher',
-	BASEMAN1: '1st Base',
-	BASEMAN2: '2nd Base',
-	BASEMAN3: '3rd Base',
-	SHORTSTOP: 'Shortstop',
-	LEFTFIELDER: 'Left Field',
-	CENTERFIELDER: 'Center Field',
-	RIGHTFIELDER: 'Right Field',
-};
 
 export default function TeamDetail() {
 	const { authMember } = useAuth();
@@ -48,7 +38,8 @@ export default function TeamDetail() {
 	const [chosenTeamPlayers, setchosenTeamPlayers] = useState<Players | null>(
 		null,
 	);
-	const [chosenTeamGames, setChosenTeamGames] = useState<Games | null>(null);
+	const [chosenTeamUpcomingGames, setChosenTeamUpcomingGames] = useState<Games | null>(null);
+	const [chosenTeamFinishedGames, setChosenTeamFinishedGames] = useState<Games | null>(null);
 
 	useEffect(() => {
 		if (!teamId) return;
@@ -94,7 +85,7 @@ export default function TeamDetail() {
 		};
 		fetchGetPlayers();
 
-		const fetchGetGames = async () => {
+		const fetchGetUpcomingGames = async () => {
 			try {
 				const gameService = new GameService();
 				const result = await gameService.getGames({
@@ -103,12 +94,27 @@ export default function TeamDetail() {
 					gameStatus: GameStatus.UPCOMING,
 					teamId: teamId,
 				});
-				setChosenTeamGames(result);
+				setChosenTeamUpcomingGames(result);
 			} catch (err) {
 				toast.error(getErrorMessage(err, 'Could not load upcoming games.'));
 			}
 		};
-		fetchGetGames();
+		fetchGetUpcomingGames();
+		const fetchFinishedGames = async () => {
+			try {
+				const gameService = new GameService();
+				const result = await gameService.getGames({
+					page: 1,
+					limit: 5,
+					gameStatus: GameStatus.FINISHED,
+					teamId: teamId,
+				});
+				setChosenTeamFinishedGames(result);
+			} catch (err) {
+				toast.error(getErrorMessage(err, 'Could not load recent games.'));
+			}
+		};
+		fetchFinishedGames()
 	}, [teamId]);
 
 	const handleSubscribeToggle = async () => {
@@ -264,52 +270,27 @@ export default function TeamDetail() {
 
 			<Container className="py-12">
 				<SectionHeader eyebrow="Schedule" title="Upcoming Games" />
-				{chosenTeamGames && chosenTeamGames.list.length !== 0 ? (
+				{chosenTeamUpcomingGames && chosenTeamUpcomingGames.list.length !== 0 ? (
 					<div className="flex flex-col gap-3">
-						{chosenTeamGames.list.map((game: Game) => {
-							const teamA = teamOf(game.teamAId);
-							const teamB = teamOf(game.teamBId);
-							const opponent = teamA?._id === teamId ? teamB : teamA;
-							const gameDate = new Date(game.gameDate);
-
-							return (
-								<Link key={game._id} to={`/games/${game._id}`}>
-									<Card className="flex items-center justify-between p-4">
-										<div className="flex items-center gap-3">
-											<ImageWithFallback
-												src={
-													opponent
-														? `${serverApi}/${opponent.teamImage[0]}`
-														: undefined
-												}
-												alt={opponent?.teamNick ?? 'TBD'}
-												className="h-10 w-10 rounded-full"
-											/>
-											<span className="text-sm font-medium text-bn-white">
-												vs {opponent?.teamNick ?? 'TBD'}
-											</span>
-										</div>
-										<div className="text-right text-xs text-bn-muted">
-											<p>
-												{gameDate.toLocaleDateString(undefined, {
-													month: 'short',
-													day: 'numeric',
-												})}
-												{' · '}
-												{gameDate.toLocaleTimeString(undefined, {
-													hour: '2-digit',
-													minute: '2-digit',
-												})}
-											</p>
-											<p>{game.gameAddress}</p>
-										</div>
-									</Card>
-								</Link>
-							);
-						})}
+						{chosenTeamUpcomingGames.list.map((game: Game) => (
+							<TeamGameRow key={game._id} game={game} teamId={teamId} />
+						))}
 					</div>
 				) : (
 					<EmptyState title="No upcoming games scheduled" />
+				)}
+			</Container>
+
+			<Container className="py-12">
+				<SectionHeader eyebrow="Form" title="Recent Results" />
+				{chosenTeamFinishedGames && chosenTeamFinishedGames.list.length !== 0 ? (
+					<div className="flex flex-col gap-3">
+						{chosenTeamFinishedGames.list.map((game: Game) => (
+							<TeamGameRow key={game._id} game={game} teamId={teamId} />
+						))}
+					</div>
+				) : (
+					<EmptyState title="No results yet" />
 				)}
 			</Container>
 		</div>

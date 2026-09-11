@@ -94,3 +94,15 @@ export const POSITION_ORDER: PlayerPosition[] = [
 	PlayerPosition.CENTERFIELDER,
 	PlayerPosition.RIGHTFIELDER,
 ];
+
+export const POSITION_LABEL: Record<string, string> = {
+	PITCHER: 'Pitcher',
+	CATCHER: 'Catcher',
+	BASEMAN1: '1st Base',
+	BASEMAN2: '2nd Base',
+	BASEMAN3: '3rd Base',
+	SHORTSTOP: 'Shortstop',
+	LEFTFIELDER: 'Left Field',
+	CENTERFIELDER: 'Center Field',
+	RIGHTFIELDER: 'Right Field',
+};

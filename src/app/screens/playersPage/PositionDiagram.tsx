@@ -1,11 +1,13 @@
 import { PlayerPosition } from '../../../lib/enums/player.enum';
-import { POSITION_INFO, POSITION_ORDER } from '../../../lib/data/playerPositions';
+import { POSITION_INFO, POSITION_ORDER } from '../../../lib/data/playerData';
 
 interface PositionDiagramProps {
 	activePosition: PlayerPosition;
 }
 
-export default function PositionDiagram({ activePosition }: PositionDiagramProps) {
+export default function PositionDiagram({
+	activePosition,
+}: PositionDiagramProps) {
 	return (
 		<svg
 			viewBox="0 0 400 440"
@@ -105,8 +107,14 @@ export default function PositionDiagram({ activePosition }: PositionDiagramProps
 							cx={info.x}
 							cy={info.y}
 							r={isActive ? 20 : 15}
-							fill={isActive ? 'var(--color-bn-red)' : 'var(--color-bn-surface-2)'}
-							stroke={isActive ? 'var(--color-bn-red-light)' : 'var(--color-bn-border)'}
+							fill={
+								isActive ? 'var(--color-bn-red)' : 'var(--color-bn-surface-2)'
+							}
+							stroke={
+								isActive
+									? 'var(--color-bn-red-light)'
+									: 'var(--color-bn-border)'
+							}
 							strokeWidth={2}
 						/>
 						<text

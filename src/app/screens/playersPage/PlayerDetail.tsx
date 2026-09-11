@@ -4,7 +4,7 @@ import PlayerService from '../../services/PlayerService';
 import type { Player } from '../../../lib/types/player';
 import { teamOf } from '../../../lib/utils/relations';
 import { serverApi } from '../../../lib/config';
-import { POSITION_INFO, POSITION_ORDER } from '../../../lib/data/playerPositions';
+import { POSITION_INFO, POSITION_ORDER } from '../../../lib/data/playerData';
 import Container from '../../components/ui/Container';
 import SectionHeader from '../../components/ui/SectionHeader';
 import Card from '../../components/ui/Card';
@@ -75,7 +75,9 @@ export default function PlayerDetail() {
 							</div>
 							<div className="border-l border-bn-border pl-6">
 								<p className="font-display text-xl font-bold text-bn-white">
-									{chosenPlayer.playerHeight ? `${chosenPlayer.playerHeight} cm` : '—'}
+									{chosenPlayer.playerHeight
+										? `${chosenPlayer.playerHeight} cm`
+										: '—'}
 								</p>
 								<p className="mt-0.5 text-[11px] text-bn-muted">Height</p>
 							</div>
