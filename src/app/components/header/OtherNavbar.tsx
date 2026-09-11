@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import { NAV_LINKS } from './navLinks';
+import { ACCOUNT_LINKS, NAV_LINKS } from './navLinks';
 import { useAuthModal } from '../../hooks/useAuthModal';
 import { useAuth } from '../../hooks/useAuth';
 import { useCart } from '../../hooks/useCart';
@@ -43,7 +43,7 @@ export default function OtherNavbar() {
 				</NavLink>
 
 				<nav className="hidden items-center gap-7 md:flex">
-					{NAV_LINKS.filter((link) => !link.authOnly || authMember).map(
+					{NAV_LINKS.map(
 						(link) => (
 							<NavLink
 								key={link.to}
@@ -93,6 +93,17 @@ export default function OtherNavbar() {
 							</button>
 							{menuOpen && (
 								<Card className="absolute right-0 top-full z-30 mt-2 w-44 overflow-hidden p-1.5">
+									{ACCOUNT_LINKS.map((link) => (
+										<NavLink
+											key={link.to}
+											to={link.to}
+											onClick={() => setMenuOpen(false)}
+											className="flex w-full items-center rounded-lg px-3 py-2 text-left text-sm font-medium text-bn-white transition-colors hover:bg-white/5"
+										>
+											{link.label}
+										</NavLink>
+									))}
+									<div className="my-1 border-t border-bn-border" />
 									<button
 										onClick={() => {
 											setMenuOpen(false);
