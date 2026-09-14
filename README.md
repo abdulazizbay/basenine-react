@@ -1,75 +1,84 @@
-# React + TypeScript + Vite
+# BaseNine (frontend)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A baseball site built around the Korean league — teams, players, fixtures and results, a standings table calculated from finished games, and a small shop.
 
-Currently, two official plugins are available:
+This is only the React side. The Express/MongoDB API it talks to lives in a separate repo: [abdulazizbay/basenine](https://github.com/abdulazizbay/basenine).
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+The API needs to be running for the frontend to work.
 
-## React Compiler
+I built this while studying, so the structure follows the patterns from the course projects fairly closely: a service class per resource, context + hook pairs for shared state, and screens that own their feature-specific data fetching.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Tech stack
 
-## Expanding the ESLint configuration
+* React 19 + TypeScript
+* Vite
+* Tailwind CSS 4
+* React Router 7
+* Axios
+* Sonner
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Running it
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
+```bash
+npm install
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://npmx.dev/package/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://npmx.dev/package/eslint-plugin-react-dom) for React-specific lint rules:
+Create a `.env` file with the API address:
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
+```env
+VITE_API_URL=http://localhost:3002
 ```
+
+That's the only environment variable needed.
+
+Start the API first. Without it, requests will fail and the frontend will show error toasts instead of content.
+
+Other scripts:
+
+```bash
+npm run build
+npm run lint
+npm run preview
+```
+
+`npm run build` typechecks the project and then creates the production build.
+
+## What's in it
+
+* **Teams** — browse, search, sort, follow a team, and see its squad, fixtures and recent results
+* **Players** — list with filters, player details, and a position diagram
+* **Games** — filter by status, team, venue or date range; finished games show the score
+* **Standings** — league table calculated from finished games
+* **Shop** — products, cart, checkout and order history
+* **My Page** — profile settings, recently viewed teams and subscribed teams
+
+Authentication uses a JWT stored in a cookie. The login/signup modal is global, so protected actions can call `openLogin()` when a user needs to sign in.
+
+## Screenshots
+
+Coming soon.
+
+## Layout
+
+```text
+src/
+  app/
+    components/    UI primitives, header/footer, shared cards
+    context/       AuthContext, AuthModalContext, CartContext
+    hooks/         useAuth, useCart, useAuthModal, useClickOutside
+    screens/       one folder per page
+    services/      API service classes, one per resource
+
+  lib/
+    types/         shared interfaces
+    enums/         mirrors of the backend enums
+    data/          static lookup data
+    utils/         small helpers
+```
+
+A few conventions worth knowing if you're looking around the code:
+
+* Screens own feature-specific data fetching; grid and card components focus on rendering. For example, `Teams.tsx` fetches the teams while `TeamsGrid.tsx` receives them as props.
+* Paginated API responses use `{ list, metaCounter }`. Pages get the total from `metaCounter[0]?.total`. Standings is the exception because the league table is returned as a plain array.
+* Errors go through `getErrorMessage()` so the toast can show the message returned by the API, such as `"Wrong password, please try again"`, instead of always showing a generic error.
