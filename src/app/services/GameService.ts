@@ -1,6 +1,7 @@
 import axios from "axios";
 import { serverApi } from "../../lib/config";
 import type { Game, GameInquiry, Games } from "../../lib/types/game";
+import type { TeamStanding } from "../../lib/types/team";
 
 class GameService {
 	private readonly path: string;
@@ -26,6 +27,15 @@ class GameService {
 			if (inquiry.teamId) url += `&teamId=${inquiry.teamId}`;
 
 			const result = await axios.get(url, { withCredentials: true });
+			return result.data;
+		} catch (err) {
+			throw err;
+		}
+	}
+	public async getStandings(): Promise<TeamStanding[]> {
+		try {
+			const url = `${this.path}/game/standings`;
+			const result = await axios.get(url);
 			return result.data;
 		} catch (err) {
 			throw err;

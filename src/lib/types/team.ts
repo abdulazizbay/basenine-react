@@ -28,3 +28,16 @@ export interface TeamInquiry {
 	limit: number;
 	search?: string;
 }
+
+export interface TeamStanding {
+	team: Team;
+	games: number;
+	wins: number;
+	losses: number;
+	draws: number;
+	runsFor: number;
+	runsAgainst: number;
+	runDiff: number;
+	winPct: number;
+	gamesBehind: number;
+}

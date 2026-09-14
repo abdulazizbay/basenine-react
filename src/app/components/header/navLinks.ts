@@ -8,6 +8,7 @@ export const NAV_LINKS: NavLinkItem[] = [
   { label: "Teams", to: "/teams" },
   { label: "Players", to: "/players" },
   { label: "Games", to: "/games" },
+  { label: "Standings", to: "/standings" },
   { label: "Shop", to: "/products" },
 ];
 

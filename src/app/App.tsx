@@ -7,6 +7,7 @@ import PlayersPage from './screens/playersPage';
 import ProductsPage from './screens/productsPage';
 import TeamsPage from './screens/teamsPage';
 import UserPage from './screens/userPage';
+import StandingsPage from './screens/standingsPage';
 import HomeNavbar from './components/header/HomeNavbar';
 import OtherNavbar from './components/header/OtherNavbar';
 import NotFoundPage from './screens/notFoundPage';
@@ -31,6 +32,7 @@ function App() {
 					<Route path="/orders" element={<OrdersPage />} />
 					<Route path="/players/*" element={<PlayersPage />} />
 					<Route path="/products/*" element={<ProductsPage />} />
+					<Route path="/standings" element={<StandingsPage />} />
 					<Route path="/teams/*" element={<TeamsPage />} />
 					<Route path="/user" element={<UserPage />} />
 					<Route path="*" element={<NotFoundPage />} />
